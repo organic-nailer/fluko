@@ -20,15 +20,20 @@ class Rasterizer(private val width: Int, private val height: Int, private val co
         )
     }
 
-    fun drawToSurface() {
+    fun drawToSurface(layerTree: LayerTree) {
         println("draw")
-        val paint = Paint().apply { color = 0xFFFF0000.toInt() }
-
-        val randomX = Random.nextFloat() * width
-        val randomY = Random.nextFloat() * height
-
         surface.canvas.clear(0xFFFFFFFF.toInt())
-        surface.canvas.drawCircle(randomX, randomY, 40f, paint)
+        layerTree.paint(PaintContext(
+            surface.canvas,
+            context
+        ))
+//        val paint = Paint().apply { color = 0xFFFF0000.toInt() }
+//
+//        val randomX = Random.nextFloat() * width
+//        val randomY = Random.nextFloat() * height
+//
+//        surface.canvas.clear(0xFFFFFFFF.toInt())
+//        surface.canvas.drawCircle(randomX, randomY, 40f, paint)
 
         context.flush()
     }
