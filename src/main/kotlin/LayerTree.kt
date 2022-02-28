@@ -1,7 +1,4 @@
-import org.jetbrains.skija.Canvas
-import org.jetbrains.skija.DirectContext
-import org.jetbrains.skija.Picture
-import org.jetbrains.skija.Rect
+import org.jetbrains.skija.*
 
 class LayerTree {
     var rootLayer: Layer? = null
@@ -15,7 +12,7 @@ abstract class Layer {
     abstract fun paint(context: PaintContext)
 }
 
-class ContainerLayer: Layer() {
+open class ContainerLayer: Layer() {
     val children: MutableList<Layer> = mutableListOf()
 
     override fun paint(context: PaintContext) {
@@ -23,6 +20,13 @@ class ContainerLayer: Layer() {
             child.paint(context)
         }
     }
+}
+
+class TransformLayer(
+    val transform: Matrix44? = null,
+    val offset: Offset? = null
+): ContainerLayer() {
+
 }
 
 class PictureLayer(

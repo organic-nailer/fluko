@@ -23,14 +23,22 @@ fun main(args: Array<String>) {
 
     val glView = GLView(width, height)
 
-    val shell = Shell(taskRunners, glView, null)
-
-    taskRunners.rasterTaskRunner.postTask {
-        println("in rasterThread")
-        val context = shell.glView.createContext()
-        val rasterizer = Rasterizer(width, height, context)
-        shell.rasterizer = rasterizer
+    val renderPipeline = RenderPipeline().apply {
+        renderView = RenderView(width.toDouble(),height.toDouble())
     }
+
+    val shell = Shell(taskRunners, glView, null, renderPipeline, width, height)
+
+    shell.initRasterThread()
+
+//    taskRunners.rasterTaskRunner.postTask {
+//        println("in rasterThread")
+//        val context = shell.glView.createContext()
+//        val rasterizer = Rasterizer(width, height, context)
+//        shell.rasterizer = rasterizer
+//    }
+
+    shell.drawFrame()
 
     var keyPressed = false
 
@@ -43,12 +51,21 @@ fun main(args: Array<String>) {
     while(!shell.glView.windowShouldClose()) {
         if(keyPressed) {
             keyPressed = false
-            shell.taskRunners.rasterTaskRunner.postTask {
-                shell.rasterizer!!.drawToSurface(
-                    createRandomTree(width.toFloat(),height.toFloat())
+            renderPipeline.renderView!!.child = RenderPositionedBox(
+                child = RenderFlex(
+                    children = listOf(
+                        RenderConstrainedBox(
+                            additionalConstraints = BoxConstraints.tight(Size(100.0, 100.0)),
+                            child = RenderColoredBox(0xFFFF0000.toInt())
+                        ),
+                        RenderConstrainedBox(
+                            additionalConstraints = BoxConstraints.tight(Size(200.0, 50.0)),
+                            child = RenderColoredBox(0xFF0000FF.toInt())
+                        ),
+                    )
                 )
-                shell.glView.swapBuffers()
-            }
+            )
+            shell.drawFrame()
         }
         shell.glView.pollEvents()
     }
