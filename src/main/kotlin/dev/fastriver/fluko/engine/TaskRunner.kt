@@ -1,8 +1,11 @@
+package dev.fastriver.fluko.engine
+
 class TaskRunners(
     val platformTaskRunner: TaskRunner,
     val rasterTaskRunner: TaskRunner,
     val uiTaskRunner: TaskRunner,
-    val ioTaskRunner: TaskRunner) {
+    val ioTaskRunner: TaskRunner
+) {
     fun terminateAll() {
         platformTaskRunner.terminate()
         rasterTaskRunner.terminate()

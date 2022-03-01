@@ -1,3 +1,7 @@
+package dev.fastriver.fluko.engine
+
+import dev.fastriver.fluko.framework.RenderPipeline
+
 class Shell(
     val taskRunners: TaskRunners,
     var glView: GLView,

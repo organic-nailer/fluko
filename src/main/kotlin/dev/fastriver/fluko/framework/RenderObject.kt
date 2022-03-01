@@ -1,4 +1,7 @@
-import org.jetbrains.skija.Color
+package dev.fastriver.fluko.framework
+
+import dev.fastriver.fluko.engine.ContainerLayer
+import dev.fastriver.fluko.engine.TransformLayer
 import org.jetbrains.skija.Paint
 import org.jetbrains.skija.Rect
 import kotlin.math.max
@@ -72,17 +75,21 @@ class RenderPositionedBox(
 
         if(child != null) {
             child.layout(constraints.loosen())
-            size = constraints.constrain(Size(
+            size = constraints.constrain(
+                Size(
                 if(shrinkWrapWidth) child.size.width * (widthFactor ?: 0.0) else Double.POSITIVE_INFINITY,
                 if(shrinkWrapHeight) child.size.height * (heightFactor ?: 0.0) else Double.POSITIVE_INFINITY,
-            ))
+            )
+            )
             alignChild()
         }
         else {
-            size = constraints.constrain(Size(
+            size = constraints.constrain(
+                Size(
                 if(shrinkWrapWidth) 0.0 else Double.POSITIVE_INFINITY,
                 if(shrinkWrapHeight) 0.0 else Double.POSITIVE_INFINITY
-            ))
+            )
+            )
         }
     }
 
@@ -136,14 +143,14 @@ class RenderFlex(
 
         // 余った幅を算出
         val remainingSpace = max(0.0, idealMainSize - allocatedSize)
-        // MainAxisAlignment.startなので最初の余白も間もなし
+        // dev.fastriver.fluko.framework.MainAxisAlignment.startなので最初の余白も間もなし
         val leadingSpace = 0.0
         val betweenSpace = 0.0
 
         var childMainPosition = leadingSpace
         for(child in children) {
             val childParentData = child.parentData as BoxParentData
-            // CrossAxisAlignment.centerなので幅の半分を引いたものが余白
+            // dev.fastriver.fluko.framework.CrossAxisAlignment.centerなので幅の半分を引いたものが余白
             val childCrossPosition = crossSize / 2.0 - child.size.width / 2.0
 
             // 子のOffsetを決定

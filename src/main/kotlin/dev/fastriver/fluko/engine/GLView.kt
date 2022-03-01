@@ -1,3 +1,5 @@
+package dev.fastriver.fluko.engine
+
 import org.jetbrains.skija.DirectContext
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
