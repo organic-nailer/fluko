@@ -1,6 +1,6 @@
-package dev.fastriver.fluko.engine
+package dev.fastriver.fluko.common.layer
 
-import dev.fastriver.fluko.framework.Offset
+import dev.fastriver.fluko.common.Offset
 import org.jetbrains.skija.*
 
 class LayerTree {

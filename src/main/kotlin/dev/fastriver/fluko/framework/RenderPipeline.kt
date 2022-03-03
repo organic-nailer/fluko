@@ -1,7 +1,8 @@
 package dev.fastriver.fluko.framework
 
-import dev.fastriver.fluko.engine.ContainerLayer
-import dev.fastriver.fluko.engine.PictureLayer
+import dev.fastriver.fluko.common.layer.ContainerLayer
+import dev.fastriver.fluko.common.layer.PictureLayer
+import dev.fastriver.fluko.common.Offset
 import org.jetbrains.skija.Canvas
 import org.jetbrains.skija.PictureRecorder
 import org.jetbrains.skija.Rect

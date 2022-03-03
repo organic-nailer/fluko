@@ -1,5 +1,7 @@
 package dev.fastriver.fluko.engine
 
+import dev.fastriver.fluko.common.layer.LayerTree
+import dev.fastriver.fluko.common.layer.PaintContext
 import org.jetbrains.skija.*
 import org.lwjgl.opengl.GL11
 

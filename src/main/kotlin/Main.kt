@@ -1,3 +1,4 @@
+import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.engine.*
 import dev.fastriver.fluko.framework.*
 import org.lwjgl.glfw.GLFW.GLFW_KEY_M
@@ -19,16 +20,8 @@ fun main(args: Array<String>) {
     println("task created")
 
     val glView = GLView(width, height)
-
-    val renderPipeline = RenderPipeline().apply {
-        renderView = RenderView(width.toDouble(),height.toDouble())
-    }
-
-    val shell = Shell(taskRunners, glView, null, renderPipeline, width, height)
-
+    val shell = Shell(taskRunners, glView, null, width, height)
     shell.initRasterThread()
-
-    shell.drawFrame()
 
     var keyPressed = false
 
@@ -38,24 +31,51 @@ fun main(args: Array<String>) {
         }
     }
 
+    var stretch = 0
+
     while(!shell.glView.windowShouldClose()) {
         if(keyPressed) {
             keyPressed = false
-            renderPipeline.renderView!!.child = RenderPositionedBox(
-                child = RenderFlex(
-                    children = listOf(
-                        RenderConstrainedBox(
-                            additionalConstraints = BoxConstraints.tight(Size(100.0, 100.0)),
-                            child = RenderColoredBox(0xFFFF0000.toInt())
+            runApp(shell,
+                Align(
+                    child = Flex(
+                        children = listOf(
+                            SizedBox(
+                                child = ColoredBox(
+                                    child = null,
+                                    color = 0xFFFF0000.toInt()
+                                ),
+                                width = 100.0,
+                                height = 100.0
+                            ),
+                            SizedBox(
+                                child = ColoredBox(
+                                    child = null,
+                                    color = 0xFF0000FF.toInt()
+                                ),
+                                width = 200.0,
+                                height = 50.0 + stretch++
+                            ),
                         ),
-                        RenderConstrainedBox(
-                            additionalConstraints = BoxConstraints.tight(Size(200.0, 50.0)),
-                            child = RenderColoredBox(0xFF0000FF.toInt())
-                        ),
+                        direction = Axis.Vertical
                     )
                 )
             )
-            shell.drawFrame()
+//            renderPipeline.renderView!!.child = RenderPositionedBox(
+//                child = RenderFlex(
+//                    children = listOf(
+//                        RenderConstrainedBox(
+//                            additionalConstraints = BoxConstraints.tight(Size(100.0, 100.0)),
+//                            child = RenderColoredBox(0xFFFF0000.toInt())
+//                        ),
+//                        RenderConstrainedBox(
+//                            additionalConstraints = BoxConstraints.tight(Size(200.0, 50.0)),
+//                            child = RenderColoredBox(0xFF0000FF.toInt())
+//                        ),
+//                    )
+//                )
+//            )
+//            shell.drawFrame()
         }
         shell.glView.pollEvents()
     }

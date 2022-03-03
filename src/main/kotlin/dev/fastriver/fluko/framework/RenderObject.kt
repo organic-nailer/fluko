@@ -1,9 +1,10 @@
 package dev.fastriver.fluko.framework
 
-import dev.fastriver.fluko.engine.ContainerLayer
-import dev.fastriver.fluko.engine.TransformLayer
+import dev.fastriver.fluko.common.layer.ContainerLayer
+import dev.fastriver.fluko.common.layer.TransformLayer
+import dev.fastriver.fluko.common.Offset
+import dev.fastriver.fluko.common.Size
 import org.jetbrains.skija.Paint
-import org.jetbrains.skija.Rect
 import kotlin.math.max
 
 abstract class RenderObject {
@@ -16,31 +17,32 @@ abstract class RenderObject {
     abstract fun paint(context: PaintingContext, offset: Offset)
 }
 
+interface RenderObjectWithChildMixin<ChildType: RenderObject> {
+    var child: ChildType?
+
+    fun setRenderObjectChild(child: ChildType) {
+        this.child = child
+        this.child!!.parentData = BoxParentData()
+    }
+}
+
+interface ContainerRenderObjectMixin<ChildType: RenderObject> {
+    val children: MutableList<ChildType>
+
+    fun insertChild(child: ChildType) {
+        children.add(child)
+        child.parentData = BoxParentData()
+    }
+}
+
 abstract class RenderBox : RenderObject() {
     override var size: Size = Size.zero
 }
 
-class RenderConstrainedBox(
-    private val additionalConstraints: BoxConstraints,
-    val child: RenderBox?
-) : RenderBox() {
+/* ------------------------------------------------------------------------------------------ */
 
-    override fun layout(constraints: BoxConstraints) {
-        if(child != null) {
-            child.layout(additionalConstraints.enforce(constraints))
-            size = child.size
-        } else {
-            size = additionalConstraints.enforce(constraints).constrain(size)
-        }
-    }
-
-    override fun paint(context: PaintingContext, offset: Offset) {
-        child?.paint(context, offset)
-    }
-}
-
-abstract class RenderProxyBox : RenderBox() {
-    var child: RenderBox? = null
+abstract class RenderProxyBox : RenderBox(), RenderObjectWithChildMixin<RenderBox> {
+    override var child: RenderBox? = null
     override fun layout(constraints: BoxConstraints) {
         if(child != null) {
             child!!.layout(constraints)
@@ -48,6 +50,24 @@ abstract class RenderProxyBox : RenderBox() {
         } else {
             size = constraints.smallest
         }
+    }
+}
+
+class RenderConstrainedBox(
+    private val additionalConstraints: BoxConstraints
+) : RenderProxyBox() {
+
+    override fun layout(constraints: BoxConstraints) {
+        if(child != null) {
+            child!!.layout(additionalConstraints.enforce(constraints))
+            size = child!!.size
+        } else {
+            size = additionalConstraints.enforce(constraints).constrain(size)
+        }
+    }
+
+    override fun paint(context: PaintingContext, offset: Offset) {
+        child?.paint(context, offset)
     }
 }
 
@@ -60,12 +80,14 @@ class RenderColoredBox(val color: Int) : RenderProxyBox() {
     }
 }
 
+/* ------------------------------------------------------------------------------------------- */
+
 class RenderPositionedBox(
-    val child: RenderBox? = null,
     val widthFactor: Double? = null,
     val heightFactor: Double? = null,
     val alignment: Alignment = Alignment.center
-) : RenderBox() {
+) : RenderBox(), RenderObjectWithChildMixin<RenderBox> {
+    override var child: RenderBox? = null
     init {
         child?.parentData = BoxParentData()
     }
@@ -74,11 +96,11 @@ class RenderPositionedBox(
         val shrinkWrapHeight = heightFactor != null || constraints.maxHeight == Double.POSITIVE_INFINITY
 
         if(child != null) {
-            child.layout(constraints.loosen())
+            child!!.layout(constraints.loosen())
             size = constraints.constrain(
                 Size(
-                if(shrinkWrapWidth) child.size.width * (widthFactor ?: 0.0) else Double.POSITIVE_INFINITY,
-                if(shrinkWrapHeight) child.size.height * (heightFactor ?: 0.0) else Double.POSITIVE_INFINITY,
+                if(shrinkWrapWidth) child!!.size.width * (widthFactor ?: 0.0) else Double.POSITIVE_INFINITY,
+                if(shrinkWrapHeight) child!!.size.height * (heightFactor ?: 0.0) else Double.POSITIVE_INFINITY,
             )
             )
             alignChild()
@@ -96,13 +118,13 @@ class RenderPositionedBox(
     /// alignmentに沿うように子のoffsetを決定する
     private fun alignChild() {
         val childParentData = child!!.parentData as BoxParentData
-        childParentData.offset = alignment.computeOffset(size, child.size)
+        childParentData.offset = alignment.computeOffset(size, child!!.size)
     }
 
     override fun paint(context: PaintingContext, offset: Offset) {
         if(child != null) {
-            val childParentData = child.parentData as BoxParentData
-            child.paint(context, childParentData.offset + offset)
+            val childParentData = child!!.parentData as BoxParentData
+            child!!.paint(context, childParentData.offset + offset)
         }
     }
 }
@@ -112,9 +134,9 @@ class RenderFlex(
     val mainAxisAlignment: MainAxisAlignment = MainAxisAlignment.Start,
     val mainAxisSize: MainAxisSize = MainAxisSize.Max,
     val crossAxisAlignment: CrossAxisAlignment = CrossAxisAlignment.Center,
-    val verticalDirection: VerticalDirection = VerticalDirection.Down,
-    val children: List<RenderBox> = listOf()
-) : RenderBox() {
+    val verticalDirection: VerticalDirection = VerticalDirection.Down
+) : RenderBox(), ContainerRenderObjectMixin<RenderBox> {
+    override val children: MutableList<RenderBox> = mutableListOf()
     init {
         children.forEach {
             it.parentData = BoxParentData()
@@ -183,9 +205,9 @@ enum class CrossAxisAlignment { Start, End, Center, Stretch, Baseline }
 
 enum class VerticalDirection { Up, Down }
 
-class RenderView(width: Double, height: Double) : RenderObject() {
+class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWithChildMixin<RenderBox> {
     override var size: Size = Size(width, height)
-    var child: RenderBox? = null
+    override var child: RenderBox? = null
     val layer: ContainerLayer = TransformLayer()
     override fun layout(constraints: BoxConstraints) {
         throw NotImplementedError()
@@ -248,52 +270,6 @@ class BoxConstraints(
     fun loosen() = BoxConstraints(maxWidth = maxWidth, maxHeight = maxHeight)
 
     val smallest: Size = Size(constrainWidth(0.0), constrainHeight(0.0))
-}
-
-abstract class OffsetBase(
-    private val dx: Double,
-    private val dy: Double
-) {
-    val isInfinite: Boolean
-        get() = dx >= Double.POSITIVE_INFINITY || dy >= Double.POSITIVE_INFINITY
-
-    val isFinite: Boolean
-        get() = dx.isFinite() && dy.isFinite()
-}
-
-class Size(
-    val width: Double,
-    val height: Double
-) : OffsetBase(width, height) {
-    companion object {
-        val zero = Size(0.0, 0.0)
-    }
-
-    val isEmpty = width <= 0.0 || height <= 0.0
-
-    operator fun minus(other: OffsetBase): OffsetBase {
-        if(other is Offset) {
-            return Size(width - other.dx, height - other.dy)
-        }
-        if(other is Size) {
-            return Offset(width - other.width, height - other.height)
-        }
-        throw IllegalArgumentException()
-    }
-
-    fun and(other: Offset): Rect {
-        return Rect.makeXYWH(other.dx.toFloat(),other.dy.toFloat(),width.toFloat(),height.toFloat())
-    }
-}
-
-class Offset(val dx: Double, val dy: Double): OffsetBase(dx,dy) {
-    companion object {
-        val zero = Offset(0.0,0.0)
-    }
-
-    operator fun plus(other: Offset): Offset {
-        return Offset(dx+other.dx,dy+other.dy)
-    }
 }
 
 class Alignment(val x: Double, val y: Double) {
