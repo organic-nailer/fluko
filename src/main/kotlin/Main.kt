@@ -2,6 +2,7 @@ import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.engine.*
 import dev.fastriver.fluko.framework.*
 import dev.fastriver.fluko.framework.geometrics.Axis
+import dev.fastriver.fluko.framework.render.TextSpan
 import org.lwjgl.glfw.GLFW.GLFW_KEY_M
 import org.lwjgl.glfw.GLFW.GLFW_PRESS
 
@@ -48,6 +49,12 @@ fun main(args: Array<String>) {
                                 ),
                                 width = 100.0,
                                 height = 100.0
+                            ),
+                            SizedBox(
+                                child = RichText(
+                                    text = TextSpan("Hello Hello Hello Hello, Fluko!")
+                                ),
+                                width = 200.0
                             ),
                             SizedBox(
                                 child = ColoredBox(

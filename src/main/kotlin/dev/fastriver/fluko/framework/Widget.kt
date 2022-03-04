@@ -94,3 +94,13 @@ class Flex(
         )
     }
 }
+
+class RichText(
+    val text: TextSpan,
+): MultiChildRenderObjectWidget(listOf()) {
+    override fun createRenderObject(): RenderObject {
+        return RenderParagraph(
+            text
+        )
+    }
+}
