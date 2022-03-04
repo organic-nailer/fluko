@@ -3,6 +3,7 @@ package dev.fastriver.fluko.framework
 import dev.fastriver.fluko.common.layer.ContainerLayer
 import dev.fastriver.fluko.common.layer.PictureLayer
 import dev.fastriver.fluko.common.Offset
+import dev.fastriver.fluko.framework.render.RenderView
 import org.jetbrains.skija.Canvas
 import org.jetbrains.skija.PictureRecorder
 import org.jetbrains.skija.Rect

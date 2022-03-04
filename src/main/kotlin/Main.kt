@@ -1,6 +1,7 @@
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.engine.*
 import dev.fastriver.fluko.framework.*
+import dev.fastriver.fluko.framework.geometrics.Axis
 import org.lwjgl.glfw.GLFW.GLFW_KEY_M
 import org.lwjgl.glfw.GLFW.GLFW_PRESS
 

@@ -1,5 +1,9 @@
 package dev.fastriver.fluko.framework
 
+import dev.fastriver.fluko.framework.element.*
+import dev.fastriver.fluko.framework.geometrics.*
+import dev.fastriver.fluko.framework.render.*
+
 abstract class Widget {
     abstract fun createElement(): Element
 }
