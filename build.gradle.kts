@@ -19,6 +19,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
     api("org.jetbrains.skija:${skArtifact}:${skVersion}")
 
     implementation("org.lwjgl:lwjgl:$lwjglVersion")
@@ -30,7 +33,7 @@ dependencies {
 }
 
 tasks.test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile>() {
