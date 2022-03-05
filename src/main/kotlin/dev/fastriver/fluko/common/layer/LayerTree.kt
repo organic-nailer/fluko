@@ -13,6 +13,8 @@ class LayerTree {
 
 abstract class Layer {
     abstract fun paint(context: PaintContext)
+
+    abstract fun clone(): Layer
 }
 
 open class ContainerLayer: Layer() {
@@ -23,13 +25,27 @@ open class ContainerLayer: Layer() {
             child.paint(context)
         }
     }
+
+    override fun clone(): Layer {
+        val cloned = ContainerLayer()
+        for(child in children) {
+            cloned.children.add(child.clone())
+        }
+        return cloned
+    }
 }
 
 class TransformLayer(
     val transform: Matrix44? = null,
     val offset: Offset? = null
 ): ContainerLayer() {
-
+    override fun clone(): Layer {
+        val cloned = TransformLayer(transform, offset)
+        for(child in children) {
+            cloned.children.add(child.clone())
+        }
+        return cloned
+    }
 }
 
 class PictureLayer(
@@ -39,6 +55,12 @@ class PictureLayer(
 
     override fun paint(context: PaintContext) {
         picture?.playback(context.canvas)
+    }
+
+    override fun clone(): Layer {
+        val cloned = PictureLayer(canvasBounds)
+        cloned.picture = picture
+        return cloned
     }
 }
 

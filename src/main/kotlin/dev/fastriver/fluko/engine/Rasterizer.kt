@@ -23,7 +23,7 @@ class Rasterizer(private val width: Int, private val height: Int, private val co
     }
 
     fun drawToSurface(layerTree: LayerTree) {
-        println("draw")
+        // println("draw")
         surface.canvas.clear(0xFFFFFFFF.toInt())
         layerTree.paint(
             PaintContext(

@@ -14,8 +14,8 @@ class TaskRunners(
     }
 }
 
-class TaskRunner {
-    private val loop = MessageLoop()
+class TaskRunner(name: String) {
+    private val loop = MessageLoop(name)
     var terminated = false
 
     init {
@@ -35,7 +35,7 @@ class TaskRunner {
     }
 }
 
-class MessageLoop: Thread() {
+class MessageLoop(name: String): Thread(null,null, name) {
     private var running = true;
     private val taskQueue = ArrayDeque<() -> Unit>()
     override fun run() {
@@ -57,7 +57,6 @@ class MessageLoop: Thread() {
 
     fun postTask(task: () -> Unit) {
         if(!running) return
-        println("postTask")
         taskQueue.addLast(task)
     }
 

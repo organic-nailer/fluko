@@ -11,7 +11,7 @@ class GLView(private val width: Int, private val height: Int) {
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE)
         windowHandle = GLFW.glfwCreateWindow(width, height, "Skija Sample", 0, 0)
-        GLFW.glfwSwapInterval(1)
+        GLFW.glfwSwapInterval(60)
         GLFW.glfwShowWindow(windowHandle)
     }
 
