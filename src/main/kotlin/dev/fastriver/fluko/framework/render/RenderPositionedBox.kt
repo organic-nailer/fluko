@@ -11,10 +11,13 @@ class RenderPositionedBox(
     val heightFactor: Double? = null,
     val alignment: Alignment = Alignment.center
 ) : RenderBox(), RenderObjectWithChildMixin<RenderBox> {
-    override var child: RenderBox? = null
-    init {
-        child?.parentData = BoxParentData()
-    }
+    private var childInternal: RenderBox? = null
+    override var child: RenderBox?
+        get() = childInternal
+        set(value) {
+            value?.parentData = BoxParentData()
+            childInternal = value
+        }
     override fun layout(constraints: BoxConstraints) {
         val shrinkWrapWidth = widthFactor != null || constraints.maxWidth == Double.POSITIVE_INFINITY
         val shrinkWrapHeight = heightFactor != null || constraints.maxHeight == Double.POSITIVE_INFINITY
