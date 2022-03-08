@@ -4,7 +4,14 @@ import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 
 enum class Axis {
-    Horizontal, Vertical
+    Horizontal {
+        override fun flip() = Vertical
+    },
+    Vertical {
+        override fun flip(): Axis = Horizontal
+    };
+
+    abstract fun flip(): Axis
 }
 
 enum class MainAxisAlignment {
@@ -28,10 +35,9 @@ class BoxConstraints(
             return BoxConstraints(size.width, size.width, size.height, size.height)
         }
 
-        fun tightFor(width: Double?, height: Double?): BoxConstraints {
+        fun tightFor(width: Double? = null, height: Double? = null): BoxConstraints {
             return BoxConstraints(
-                width ?: 0.0, width ?: Double.POSITIVE_INFINITY,
-                height ?: 0.0, height ?: Double.POSITIVE_INFINITY
+                width ?: 0.0, width ?: Double.POSITIVE_INFINITY, height ?: 0.0, height ?: Double.POSITIVE_INFINITY
             )
         }
     }
@@ -81,7 +87,7 @@ class Alignment(val x: Double, val y: Double) {
     private fun alongOffset(other: Offset): Offset {
         val centerX = other.dx / 2.0
         val centerY = other.dy / 2.0
-        return Offset((1+x) * centerX, (1+y) * centerY)
+        return Offset((1 + x) * centerX, (1 + y) * centerY)
     }
 
     fun computeOffset(parentSize: Size, childSize: Size): Offset {
