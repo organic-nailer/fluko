@@ -86,7 +86,7 @@ class Flex(
     val mainAxisAlignment: MainAxisAlignment = MainAxisAlignment.Start,
     val mainAxisSize: MainAxisSize = MainAxisSize.Max,
     val crossAxisAlignment: CrossAxisAlignment = CrossAxisAlignment.Center,
-    val verticalDirection: VerticalDirection = VerticalDirection.Up
+    val verticalDirection: VerticalDirection = VerticalDirection.Down
 ): MultiChildRenderObjectWidget(children) {
     override fun createRenderObject(): RenderObject {
         return RenderFlex(

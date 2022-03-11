@@ -2,7 +2,7 @@ package dev.fastriver.fluko.framework.element
 
 import dev.fastriver.fluko.framework.SingleChildRenderObjectWidget
 import dev.fastriver.fluko.framework.render.RenderObject
-import dev.fastriver.fluko.framework.render.RenderObjectWithChildMixin
+import dev.fastriver.fluko.framework.render.RenderObjectWithChild
 
 class SingleChildRenderObjectElement(widget: SingleChildRenderObjectWidget) : RenderObjectElement(widget) {
     val widgetCasted: SingleChildRenderObjectWidget = widget
@@ -14,6 +14,6 @@ class SingleChildRenderObjectElement(widget: SingleChildRenderObjectWidget) : Re
     }
 
     override fun insertRenderObjectChild(child: RenderObject) {
-        (renderObject as RenderObjectWithChildMixin<RenderObject>).setRenderObjectChild(child)
+        (renderObject as RenderObjectWithChild<RenderObject>).child = child
     }
 }

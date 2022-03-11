@@ -12,13 +12,12 @@ class RenderFlex(
     val mainAxisSize: MainAxisSize = MainAxisSize.Max,
     val crossAxisAlignment: CrossAxisAlignment = CrossAxisAlignment.Center,
     val verticalDirection: VerticalDirection = VerticalDirection.Down
-) : RenderBox(), ContainerRenderObjectMixin<RenderBox> {
+) : RenderBox(), ContainerRenderObject<RenderBox> {
+    override val thisRef: RenderObject = this
     override val children: MutableList<RenderBox> = mutableListOf()
 
-    init {
-        children.forEach {
-            it.parentData = BoxParentData()
-        }
+    override fun setupParentData(child: RenderObject) {
+        child.parentData = BoxParentData()
     }
 
     private fun getMainSize(size: Size): Double {
@@ -47,7 +46,7 @@ class RenderFlex(
         }
     }
 
-    override fun layout(constraints: BoxConstraints) { // まずはデフォルトのみ動作、Flexなし
+    override fun performLayout(constraints: BoxConstraints) { // まずはデフォルトのみ動作、Flexなし
         val maxMainSize = if(direction == Axis.Horizontal) constraints.maxWidth else constraints.maxHeight
         val canFlex = maxMainSize < Double.POSITIVE_INFINITY
         var crossSize = 0.0 // 子のサイズの最大幅(クロス軸)
@@ -169,7 +168,12 @@ class RenderFlex(
     override fun paint(context: PaintingContext, offset: Offset) {
         for(child in children) {
             val childParentData = child.parentData as BoxParentData
-            child.paint(context, childParentData.offset + offset)
+            context.paintChild(child, childParentData.offset + offset)
         }
+    }
+
+    override fun attach(owner: RenderPipeline) {
+        super.attach(owner)
+        attachChildren(owner)
     }
 }

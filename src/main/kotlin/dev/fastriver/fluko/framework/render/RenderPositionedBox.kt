@@ -3,6 +3,7 @@ package dev.fastriver.fluko.framework.render
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.PaintingContext
+import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.Alignment
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 
@@ -10,15 +11,15 @@ class RenderPositionedBox(
     val widthFactor: Double? = null,
     val heightFactor: Double? = null,
     val alignment: Alignment = Alignment.center
-) : RenderBox(), RenderObjectWithChildMixin<RenderBox> {
-    private var childInternal: RenderBox? = null
-    override var child: RenderBox?
-        get() = childInternal
-        set(value) {
-            value?.parentData = BoxParentData()
-            childInternal = value
-        }
-    override fun layout(constraints: BoxConstraints) {
+) : RenderBox(), RenderObjectWithChild<RenderBox> {
+    override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
+
+    override fun setupParentData(child: RenderObject) {
+        child.parentData = BoxParentData()
+    }
+
+    override fun
+        performLayout(constraints: BoxConstraints) {
         val shrinkWrapWidth = widthFactor != null || constraints.maxWidth == Double.POSITIVE_INFINITY
         val shrinkWrapHeight = heightFactor != null || constraints.maxHeight == Double.POSITIVE_INFINITY
 
@@ -51,7 +52,12 @@ class RenderPositionedBox(
     override fun paint(context: PaintingContext, offset: Offset) {
         if(child != null) {
             val childParentData = child!!.parentData as BoxParentData
-            child!!.paint(context, childParentData.offset + offset)
+            context.paintChild(child!!, childParentData.offset + offset)
         }
+    }
+
+    override fun attach(owner: RenderPipeline) {
+        super.attach(owner)
+        attachChild(owner)
     }
 }

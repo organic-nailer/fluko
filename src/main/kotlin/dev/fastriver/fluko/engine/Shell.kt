@@ -11,6 +11,7 @@ class Shell(
     val width: Int, val height: Int
 ): Engine {
     private var binding: WidgetsBinding = WidgetsFlukoBinding
+    private var vsyncCallback: (() -> Unit)? = null
 
     init {
         binding.connectToEngine(this)
@@ -24,11 +25,18 @@ class Shell(
         }
     }
 
-//    fun drawFrame() {
-//        renderPipeline.flushLayout()
-//        renderPipeline.flushPaint()
-//        render()
-//    }
+    override fun scheduleFrame() {
+        if(vsyncCallback == null) {
+            vsyncCallback = {
+                taskRunners.uiTaskRunner.postTask {
+                    // Flutter Animatorだと分岐があるけど
+                    // 基本的にlayerTreeは再利用されないようなので
+                    // beginFrameのみを呼ぶ
+                    binding.beginFrame()
+                }
+            }
+        }
+    }
 
     override val viewConfiguration: ViewConfiguration = ViewConfiguration(width, height)
 
@@ -38,6 +46,7 @@ class Shell(
         }
         taskRunners.rasterTaskRunner.postTask {
             rasterizer!!.drawToSurface(layerTree)
+            glView.swapBuffers()
         }
     }
 
@@ -48,8 +57,7 @@ class Shell(
     }
 
     fun onVsync() {
-        taskRunners.uiTaskRunner.postTask {
-            binding.beginFrame()
-        }
+        vsyncCallback?.invoke()
+        vsyncCallback = null
     }
 }

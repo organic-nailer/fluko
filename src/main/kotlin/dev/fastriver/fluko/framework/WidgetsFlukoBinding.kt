@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.framework
 
+import dev.fastriver.fluko.common.layer.ContainerLayer
 import dev.fastriver.fluko.framework.element.Element
 import dev.fastriver.fluko.framework.render.RenderView
 
@@ -21,15 +22,29 @@ object WidgetsFlukoBinding: WidgetsBinding {
         if(initialized) return
         initialized = true
         val configuration = engine.viewConfiguration
-        pipeline = RenderPipeline().apply {
+        pipeline = RenderPipeline(
+            onNeedVisualUpdate = {
+                ensureVisualUpdate()
+            }
+        ).apply {
             renderView = RenderView(configuration.width.toDouble(), configuration.height.toDouble())
+            renderView!!.prepareInitialFrame()
         }
     }
 
+    fun ensureVisualUpdate() {
+        //TODO: schedulerPhase
+        engine.scheduleFrame()
+    }
+
     fun attachRootWidget(rootWidget: Widget) {
+        val isBootstrapFrame = renderViewElement == null
         renderViewElement = RenderObjectToWidgetAdapter(
             rootWidget, pipeline.renderView!!
         ).attachToRenderTree()
+        if(isBootstrapFrame) {
+            ensureVisualUpdate()
+        }
     }
 
     fun scheduleWarmUpFrame() {
@@ -44,6 +59,6 @@ object WidgetsFlukoBinding: WidgetsBinding {
     fun drawFrame() {
         pipeline.flushLayout()
         pipeline.flushPaint()
-        engine.render(pipeline.renderView!!.layer)
+        engine.render(pipeline.renderView!!.layer as ContainerLayer)
     }
 }

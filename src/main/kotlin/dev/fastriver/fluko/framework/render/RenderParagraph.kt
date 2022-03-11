@@ -3,6 +3,7 @@ package dev.fastriver.fluko.framework.render
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.PaintingContext
+import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import org.jetbrains.skija.Canvas
 import org.jetbrains.skija.FontMgr
@@ -14,12 +15,12 @@ import kotlin.math.ceil
 
 class RenderParagraph(
     val text: TextSpan
-): RenderBox(), ContainerRenderObjectMixin<RenderBox> {
-    override val children: MutableList<RenderBox>
-        get() = mutableListOf()
+): RenderBox(), ContainerRenderObject<RenderBox> {
+    override val thisRef: RenderObject = this
+    override val children: MutableList<RenderBox> = mutableListOf()
     private val textPainter = TextPainter(text)
 
-    override fun layout(constraints: BoxConstraints) {
+    override fun performLayout(constraints: BoxConstraints) {
         textPainter.layout(
             minWidth = constraints.minWidth,
             maxWidth = constraints.maxWidth
@@ -33,6 +34,11 @@ class RenderParagraph(
 
     override fun paint(context: PaintingContext, offset: Offset) {
         textPainter.paint(context.canvas, offset)
+    }
+
+    override fun attach(owner: RenderPipeline) {
+        super.attach(owner)
+        attachChildren(owner)
     }
 }
 

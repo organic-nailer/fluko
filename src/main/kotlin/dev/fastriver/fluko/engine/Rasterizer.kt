@@ -5,8 +5,8 @@ import dev.fastriver.fluko.common.layer.PaintContext
 import org.jetbrains.skija.*
 import org.lwjgl.opengl.GL11
 
-class Rasterizer(private val width: Int, private val height: Int, private val context: DirectContext) {
-    private val surface: Surface
+class Rasterizer(private val width: Int, private val height: Int, val context: DirectContext) {
+    val surface: Surface
     private val fbId: Int = GL11.glGetInteger(0x8CA6)
 
     init {

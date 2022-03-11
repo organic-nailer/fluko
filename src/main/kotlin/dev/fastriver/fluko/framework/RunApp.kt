@@ -6,7 +6,7 @@ fun runApp(app: Widget) {
     WidgetsFlukoBinding.apply {
         ensureInitialized()
         attachRootWidget(app)
-        drawFrame()
+        // drawFrame()
     }
 }
 
@@ -14,6 +14,8 @@ interface Engine {
     val viewConfiguration: ViewConfiguration
 
     fun render(rootLayer: Layer)
+
+    fun scheduleFrame()
 }
 
 interface WidgetsBinding {

@@ -3,7 +3,7 @@ package dev.fastriver.fluko.framework.element
 import dev.fastriver.fluko.framework.RenderObjectToWidgetAdapter
 import dev.fastriver.fluko.framework.RenderObjectWidget
 import dev.fastriver.fluko.framework.render.RenderObject
-import dev.fastriver.fluko.framework.render.RenderObjectWithChildMixin
+import dev.fastriver.fluko.framework.render.RenderObjectWithChild
 
 class RenderObjectToWidgetElement(widget: RenderObjectWidget) : RenderObjectElement(widget) {
     private var child: Element? = null
@@ -20,6 +20,6 @@ class RenderObjectToWidgetElement(widget: RenderObjectWidget) : RenderObjectElem
     }
 
     override fun insertRenderObjectChild(child: RenderObject) {
-        (renderObject as RenderObjectWithChildMixin<RenderObject>).setRenderObjectChild(child)
+        (renderObject as RenderObjectWithChild<RenderObject>).child = child
     }
 }

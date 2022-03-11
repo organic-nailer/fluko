@@ -1,7 +1,5 @@
 package dev.fastriver.fluko.engine
 
-import dev.fastriver.fluko.framework.Engine
-
 fun runFluko(
     appMain: () -> Unit,
     windowWidth: Int = 640,
@@ -25,8 +23,9 @@ fun runFluko(
     }
 
     while(!glView.windowShouldClose()) {
+        // 垂直同期がよくわからないので30ミリ秒ごとにvsyncを呼ぶことにする
+        Thread.sleep(30)
         shell.onVsync()
-        glView.swapBuffers()
 
         glView.pollEvents()
     }

@@ -11,8 +11,8 @@ internal class RenderFlexTest {
     @Test
     fun layoutDirection() {
         var flex = RenderFlex(direction = Axis.Vertical).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 200.0, maxWidth = 200.0))
         var firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -25,8 +25,8 @@ internal class RenderFlexTest {
         assertEquals(100.0, secondChildOffset.dy)
 
         flex = RenderFlex(direction = Axis.Horizontal).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 200.0, maxWidth = 200.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -42,16 +42,16 @@ internal class RenderFlexTest {
     @Test
     fun layoutAxisSize() {
         var flex = RenderFlex(mainAxisSize = MainAxisSize.Max).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 300.0))
         assertEquals(100.0, flex.size.width)
         assertEquals(300.0, flex.size.height)
 
         flex = RenderFlex(mainAxisSize = MainAxisSize.Min).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 300.0))
         assertEquals(100.0, flex.size.width)
@@ -61,8 +61,8 @@ internal class RenderFlexTest {
     @Test
     fun layoutMainAlignment() { // ■ ■ _ _
         var flex = RenderFlex(mainAxisAlignment = MainAxisAlignment.Start).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 300.0))
         var firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -72,8 +72,8 @@ internal class RenderFlexTest {
 
         // _ ■ ■ _
         flex = RenderFlex(mainAxisAlignment = MainAxisAlignment.Center).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 300.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -83,8 +83,8 @@ internal class RenderFlexTest {
 
         // _ _ ■ ■
         flex = RenderFlex(mainAxisAlignment = MainAxisAlignment.End).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 300.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -94,9 +94,9 @@ internal class RenderFlexTest {
 
         // ■ _ ■ _ ■
         flex = RenderFlex(mainAxisAlignment = MainAxisAlignment.SpaceBetween).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 420.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -108,9 +108,9 @@ internal class RenderFlexTest {
 
         // _ ■ _ _ ■ _ _ ■ _
         flex = RenderFlex(mainAxisAlignment = MainAxisAlignment.SpaceAround).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 420.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -122,9 +122,9 @@ internal class RenderFlexTest {
 
         // _ ■ _ ■ _ ■　_
         flex = RenderFlex(mainAxisAlignment = MainAxisAlignment.SpaceEvenly).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 420.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -138,8 +138,8 @@ internal class RenderFlexTest {
     @Test
     fun layoutCrossAlignment() {
         var flex = RenderFlex(crossAxisAlignment = CrossAxisAlignment.Start).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(200.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(200.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 200.0))
         var firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -148,8 +148,8 @@ internal class RenderFlexTest {
         assertEquals(0.0, secondChildOffset.dx)
 
         flex = RenderFlex(crossAxisAlignment = CrossAxisAlignment.Center).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(200.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(200.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 200.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -158,8 +158,8 @@ internal class RenderFlexTest {
         assertEquals(0.0, secondChildOffset.dx)
 
         flex = RenderFlex(crossAxisAlignment = CrossAxisAlignment.End).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(200.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(200.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 200.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -168,8 +168,8 @@ internal class RenderFlexTest {
         assertEquals(0.0, secondChildOffset.dx)
 
         flex = RenderFlex(crossAxisAlignment = CrossAxisAlignment.Stretch).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tightFor(height = 100.0, width = null)))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tightFor(height = 100.0, width = null)))
         }
         flex.layout(BoxConstraints.tight(Size(200.0, 300.0)))
         val firstChild = flex.children[0]
@@ -185,8 +185,8 @@ internal class RenderFlexTest {
     @Test
     fun layoutVerticalDirection() {
         var flex = RenderFlex(verticalDirection = VerticalDirection.Down).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 200.0, maxWidth = 200.0))
         var firstChildOffset = (flex.children[0].parentData as BoxParentData).offset
@@ -196,8 +196,8 @@ internal class RenderFlexTest {
 
 
         flex = RenderFlex(verticalDirection = VerticalDirection.Up).apply {
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
-            insertChild(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
+            insert(RenderConstrainedBox(BoxConstraints.tight(Size(100.0, 100.0))))
         }
         flex.layout(BoxConstraints(maxHeight = 200.0, maxWidth = 200.0))
         firstChildOffset = (flex.children[0].parentData as BoxParentData).offset

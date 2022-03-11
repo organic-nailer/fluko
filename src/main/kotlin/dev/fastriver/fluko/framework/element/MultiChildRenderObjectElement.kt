@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.framework.element
 
 import dev.fastriver.fluko.framework.MultiChildRenderObjectWidget
-import dev.fastriver.fluko.framework.render.ContainerRenderObjectMixin
+import dev.fastriver.fluko.framework.render.ContainerRenderObject
 import dev.fastriver.fluko.framework.render.RenderObject
 
 class MultiChildRenderObjectElement(widget: MultiChildRenderObjectWidget) : RenderObjectElement(widget) {
@@ -16,6 +16,6 @@ class MultiChildRenderObjectElement(widget: MultiChildRenderObjectWidget) : Rend
     }
 
     override fun insertRenderObjectChild(child: RenderObject) {
-        (renderObject as ContainerRenderObjectMixin<RenderObject>).insertChild(child)
+        (renderObject as ContainerRenderObject<RenderObject>).insert(child)
     }
 }
