@@ -31,4 +31,8 @@ abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
     override fun visitChildren(visitor: RenderObjectVisitor) {
         super<RenderObjectWithChild>.visitChildren(visitor)
     }
+
+    override fun redepthChildren() {
+        super<RenderObjectWithChild>.redepthChildren { redepthChild(it) }
+    }
 }

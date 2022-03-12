@@ -24,6 +24,10 @@ class RenderFlex(
         super<ContainerRenderObject>.visitChildren(visitor)
     }
 
+    override fun redepthChildren() {
+        super<ContainerRenderObject>.redepthChildren { redepthChild(it) }
+    }
+
     private fun getMainSize(size: Size): Double {
         return when(direction) {
             Axis.Horizontal -> size.width

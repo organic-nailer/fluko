@@ -27,6 +27,16 @@ abstract class RenderObject {
     var needsLayout = true
     var relayoutBoundary: RenderObject? = null
     open val sizedByParent: Boolean = false
+    var depth: Int = 0
+
+    fun redepthChild(child: RenderObject) {
+        if(child.depth <= depth) {
+            child.depth = depth + 1
+            child.redepthChildren()
+        }
+    }
+
+    open fun redepthChildren() {}
 
     /**
      * 同じ階層のLayerを保持する
@@ -45,25 +55,20 @@ abstract class RenderObject {
 
     abstract fun paint(context: PaintingContext, offset: Offset)
 
-    fun layout(constraints: BoxConstraints, parentUsesSize: Boolean = false) {
-        // relayoutBoundaryの再計算
+    fun layout(constraints: BoxConstraints, parentUsesSize: Boolean = false) { // relayoutBoundaryの再計算
         val relayoutBoundary = if(!parentUsesSize || sizedByParent || constraints.isTight || parent == null) {
             this
-        }
-        else {
+        } else {
             parent!!.relayoutBoundary
         }
-        if(!needsLayout && this.constraints == constraints && this.relayoutBoundary == relayoutBoundary) {
-            // 制約とrelayoutBoundaryに変化がなく再レイアウト要求も無ければなにもしない
+        if(!needsLayout && this.constraints == constraints && this.relayoutBoundary == relayoutBoundary) { // 制約とrelayoutBoundaryに変化がなく再レイアウト要求も無ければなにもしない
             return
         }
         this.constraintsInternal = constraints
-        if(this.relayoutBoundary != null && relayoutBoundary != this.relayoutBoundary) {
-            // relayoutBoundaryに更新があった場合、子のrelayoutBoundaryを一旦リセットする
+        if(this.relayoutBoundary != null && relayoutBoundary != this.relayoutBoundary) { // relayoutBoundaryに更新があった場合、子のrelayoutBoundaryを一旦リセットする
             visitChildren(cleanChildRelayoutBoundary)
         }
-        this.relayoutBoundary = relayoutBoundary
-        // FlutterではsizedByParentでの分岐が存在するが、
+        this.relayoutBoundary = relayoutBoundary // FlutterではsizedByParentでの分岐が存在するが、
         // 簡略化のためperformResizeの機能はperformLayout内に移動する
         performLayout()
 
@@ -109,8 +114,7 @@ abstract class RenderObject {
         if(needsLayout) return
         if(relayoutBoundary != this) {
             markParentNeedsLayout()
-        }
-        else {
+        } else {
             needsLayout = true
             owner?.let {
                 it.nodesNeedingLayout.add(this)
@@ -147,6 +151,7 @@ abstract class RenderObject {
         if(attached) {
             child.attach(owner!!)
         }
+        redepthChild(child)
     }
 }
 
@@ -172,6 +177,13 @@ interface RenderObjectWithChild<ChildType : RenderObject> {
      */
     fun visitChildren(visitor: RenderObjectVisitor) {
         child?.let(visitor)
+    }
+
+    /**
+     * Implement先の[RenderObject.redepthChildren]で必ず呼ぶ
+     */
+    fun redepthChildren(callback: (child: RenderObject) -> Unit) {
+        child?.let(callback)
     }
 
     class ChildDelegate<ChildType : RenderObject> {
@@ -213,6 +225,15 @@ interface ContainerRenderObject<ChildType : RenderObject> {
     fun visitChildren(visitor: RenderObjectVisitor) {
         for(child in children) {
             visitor(child)
+        }
+    }
+
+    /**
+     * Implement先の[RenderObject.redepthChildren]で必ず呼ぶ
+     */
+    fun redepthChildren(callback: (child: RenderObject) -> Unit) {
+        for(child in children) {
+            child.let(callback)
         }
     }
 }

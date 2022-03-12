@@ -31,6 +31,10 @@ class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWi
         super<RenderObjectWithChild>.visitChildren(visitor)
     }
 
+    override fun redepthChildren() {
+        super<RenderObjectWithChild>.redepthChildren { redepthChild(it) }
+    }
+
     fun prepareInitialFrame() {
         scheduleInitialLayout()
         scheduleInitialPaint(TransformLayer(offset = Offset.zero))

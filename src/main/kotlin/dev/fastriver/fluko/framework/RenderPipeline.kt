@@ -30,9 +30,9 @@ class RenderPipeline(
 
     fun flushLayout() {
         while(nodesNeedingLayout.isNotEmpty()) {
-            val dirtyNodes = nodesNeedingLayout.toList()
+            // ツリーの上の方を先にやる
+            val dirtyNodes = nodesNeedingLayout.sortedBy { it.depth }
             nodesNeedingLayout.clear()
-            // TODO: depth
             for(node in dirtyNodes) {
                 if(node.needsLayout && node.owner == this) {
                     node.layoutWithoutResize()
@@ -42,7 +42,7 @@ class RenderPipeline(
     }
 
     fun flushPaint() {
-       val dirtyNodes = nodesNeedingPaint.toList()
+       val dirtyNodes = nodesNeedingPaint.sortedBy { it.depth }
        nodesNeedingPaint.clear()
         for(node in dirtyNodes) {
             if(node.needsPaint && node.owner == this) {
