@@ -8,7 +8,7 @@ import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
 
-    override fun performLayout(constraints: BoxConstraints) {
+    override fun performLayout() {
         if(child != null) {
             child!!.layout(constraints)
             size = child!!.size
@@ -26,5 +26,9 @@ abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
     override fun attach(owner: RenderPipeline) {
         super.attach(owner)
         attachChild(owner)
+    }
+
+    override fun visitChildren(visitor: RenderObjectVisitor) {
+        super<RenderObjectWithChild>.visitChildren(visitor)
     }
 }

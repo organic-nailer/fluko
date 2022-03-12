@@ -20,6 +20,10 @@ class RenderFlex(
         child.parentData = BoxParentData()
     }
 
+    override fun visitChildren(visitor: RenderObjectVisitor) {
+        super<ContainerRenderObject>.visitChildren(visitor)
+    }
+
     private fun getMainSize(size: Size): Double {
         return when(direction) {
             Axis.Horizontal -> size.width
@@ -46,7 +50,7 @@ class RenderFlex(
         }
     }
 
-    override fun performLayout(constraints: BoxConstraints) { // まずはデフォルトのみ動作、Flexなし
+    override fun performLayout() { // まずはデフォルトのみ動作、Flexなし
         val maxMainSize = if(direction == Axis.Horizontal) constraints.maxWidth else constraints.maxHeight
         val canFlex = maxMainSize < Double.POSITIVE_INFINITY
         var crossSize = 0.0 // 子のサイズの最大幅(クロス軸)

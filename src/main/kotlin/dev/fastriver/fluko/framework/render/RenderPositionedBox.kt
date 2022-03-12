@@ -8,9 +8,7 @@ import dev.fastriver.fluko.framework.geometrics.Alignment
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 
 class RenderPositionedBox(
-    val widthFactor: Double? = null,
-    val heightFactor: Double? = null,
-    val alignment: Alignment = Alignment.center
+    val widthFactor: Double? = null, val heightFactor: Double? = null, val alignment: Alignment = Alignment.center
 ) : RenderBox(), RenderObjectWithChild<RenderBox> {
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
 
@@ -18,8 +16,7 @@ class RenderPositionedBox(
         child.parentData = BoxParentData()
     }
 
-    override fun
-        performLayout(constraints: BoxConstraints) {
+    override fun performLayout() {
         val shrinkWrapWidth = widthFactor != null || constraints.maxWidth == Double.POSITIVE_INFINITY
         val shrinkWrapHeight = heightFactor != null || constraints.maxHeight == Double.POSITIVE_INFINITY
 
@@ -32,8 +29,7 @@ class RenderPositionedBox(
                 )
             )
             alignChild()
-        }
-        else {
+        } else {
             size = constraints.constrain(
                 Size(
                     if(shrinkWrapWidth) 0.0 else Double.POSITIVE_INFINITY,
@@ -59,5 +55,9 @@ class RenderPositionedBox(
     override fun attach(owner: RenderPipeline) {
         super.attach(owner)
         attachChild(owner)
+    }
+
+    override fun visitChildren(visitor: RenderObjectVisitor) {
+        super<RenderObjectWithChild>.visitChildren(visitor)
     }
 }

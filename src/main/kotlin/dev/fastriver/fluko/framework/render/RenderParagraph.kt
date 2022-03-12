@@ -20,7 +20,7 @@ class RenderParagraph(
     override val children: MutableList<RenderBox> = mutableListOf()
     private val textPainter = TextPainter(text)
 
-    override fun performLayout(constraints: BoxConstraints) {
+    override fun performLayout() {
         textPainter.layout(
             minWidth = constraints.minWidth,
             maxWidth = constraints.maxWidth
@@ -39,6 +39,10 @@ class RenderParagraph(
     override fun attach(owner: RenderPipeline) {
         super.attach(owner)
         attachChildren(owner)
+    }
+
+    override fun visitChildren(visitor: RenderObjectVisitor) {
+        super<ContainerRenderObject>.visitChildren(visitor)
     }
 }
 

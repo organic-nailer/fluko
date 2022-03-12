@@ -6,7 +6,7 @@ class RenderConstrainedBox(
     private val additionalConstraints: BoxConstraints
 ) : RenderProxyBox() {
 
-    override fun performLayout(constraints: BoxConstraints) {
+    override fun performLayout() {
         if(child != null) {
             child!!.layout(additionalConstraints.enforce(constraints))
             size = child!!.size

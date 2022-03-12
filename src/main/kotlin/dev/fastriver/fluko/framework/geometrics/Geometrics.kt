@@ -69,6 +69,10 @@ class BoxConstraints(
     fun loosen() = BoxConstraints(maxWidth = maxWidth, maxHeight = maxHeight)
 
     val smallest: Size = Size(constrainWidth(0.0), constrainHeight(0.0))
+
+    val hasTightWidth: Boolean = minWidth >= maxWidth
+    val hasTightHeight: Boolean = minHeight >= maxHeight
+    val isTight: Boolean = hasTightWidth && hasTightHeight
 }
 
 class Alignment(val x: Double, val y: Double) {

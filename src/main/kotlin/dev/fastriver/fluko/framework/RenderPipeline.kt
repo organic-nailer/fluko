@@ -24,15 +24,26 @@ class RenderPipeline(
      * [RenderObject.markNeedsPaint]の通り、[RenderObject.isRepaintBoundary] == trueの
      * もの([RenderView], [RenderRepaintBoundary] ...)のみが追加される
      */
-    val nodeNeedingPaint: MutableList<RenderObject> = mutableListOf()
+    val nodesNeedingPaint: MutableList<RenderObject> = mutableListOf()
+
+    val nodesNeedingLayout: MutableList<RenderObject> = mutableListOf()
 
     fun flushLayout() {
-        renderView!!.performLayout()
+        while(nodesNeedingLayout.isNotEmpty()) {
+            val dirtyNodes = nodesNeedingLayout.toList()
+            nodesNeedingLayout.clear()
+            // TODO: depth
+            for(node in dirtyNodes) {
+                if(node.needsLayout && node.owner == this) {
+                    node.layoutWithoutResize()
+                }
+            }
+        }
     }
 
     fun flushPaint() {
-       val dirtyNodes = nodeNeedingPaint.toList()
-       nodeNeedingPaint.clear()
+       val dirtyNodes = nodesNeedingPaint.toList()
+       nodesNeedingPaint.clear()
         for(node in dirtyNodes) {
             if(node.needsPaint && node.owner == this) {
                 // TODO: consider if node detached

@@ -12,12 +12,8 @@ class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWi
     override var size: Size = Size(width, height)
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
     override val isRepaintBoundary: Boolean = true
-    override fun performLayout(constraints: BoxConstraints) {
-        child?.layout(constraints)
-    }
-
-    fun performLayout() {
-        performLayout(BoxConstraints.tight(size))
+    override fun performLayout() {
+        child?.layout(BoxConstraints.tight(size))
     }
 
     override fun paint(context: PaintingContext, offset: Offset) {
@@ -31,13 +27,22 @@ class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWi
         attachChild(owner)
     }
 
+    override fun visitChildren(visitor: RenderObjectVisitor) {
+        super<RenderObjectWithChild>.visitChildren(visitor)
+    }
+
     fun prepareInitialFrame() {
-        // scheduleInitialLayout()
+        scheduleInitialLayout()
         scheduleInitialPaint(TransformLayer(offset = Offset.zero))
+    }
+
+    private fun scheduleInitialLayout() {
+        relayoutBoundary = this
+        owner!!.nodesNeedingLayout.add(this)
     }
 
     private fun scheduleInitialPaint(rootLayer: ContainerLayer) {
         layer = rootLayer
-        owner!!.nodeNeedingPaint.add(this)
+        owner!!.nodesNeedingPaint.add(this)
     }
 }
