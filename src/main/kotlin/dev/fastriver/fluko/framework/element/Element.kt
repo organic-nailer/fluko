@@ -114,9 +114,9 @@ abstract class Element(
         child.detachRenderObject()
     }
 
-    fun forgetChild(child: Element) {
-        // TODO: implement
-    }
+//    fun forgetChild(child: Element) {
+//        // TODO: implement
+//    }
 
     fun activate() {
         if(dirty) {
