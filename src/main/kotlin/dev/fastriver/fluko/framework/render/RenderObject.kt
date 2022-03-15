@@ -129,7 +129,19 @@ abstract class RenderObject {
     }
 
     open fun attach(owner: RenderPipeline) {
-        this.owner = owner //  TODO: call markNeedsXXX
+        this.owner = owner
+        if(needsLayout && relayoutBoundary != null) {
+            needsLayout = false
+            markNeedsLayout()
+        }
+        if(needsPaint && layer != null) {
+            needsPaint = false
+            markNeedsPaint()
+        }
+    }
+
+    open fun detach() {
+        this.owner = null
     }
 
     open fun setupParentData(child: RenderObject) {
@@ -147,11 +159,31 @@ abstract class RenderObject {
 
     fun adoptChild(child: RenderObject) {
         setupParentData(child)
+        markNeedsLayout()
         child.parent = this
         if(attached) {
             child.attach(owner!!)
         }
         redepthChild(child)
+    }
+
+    fun dropChild(child: RenderObject) {
+        child.cleanRelayoutBounary()
+        child.parentData = null
+        child.parent = null
+        if (attached) {
+            child.detach()
+        }
+        markNeedsLayout()
+    }
+
+    /**
+     * RenderObjectを破棄する時に呼ぶ
+     *
+     * layerの参照を持っていれば捨てる
+     */
+    open fun dispose() {
+        layer = null
     }
 }
 
@@ -170,6 +202,13 @@ interface RenderObjectWithChild<ChildType : RenderObject> {
      */
     fun attachChild(owner: RenderPipeline) {
         child?.attach(owner)
+    }
+
+    /**
+     * Implement先の[RenderObject.detach]で必ず呼ぶ
+     */
+    fun detachChild() {
+        child?.detach()
     }
 
     /**
@@ -193,6 +232,9 @@ interface RenderObjectWithChild<ChildType : RenderObject> {
         }
 
         operator fun setValue(thisRef: RenderObject, property: KProperty<*>, value: ChildType?) {
+            if(child != null) {
+                thisRef.dropChild(child!!)
+            }
             child = value
             child?.let {
                 thisRef.adoptChild(it)
@@ -210,12 +252,26 @@ interface ContainerRenderObject<ChildType : RenderObject> {
         children.add(child) // child.parentData = BoxParentData()
     }
 
+    fun remove(child: ChildType) {
+        children.remove(child)
+        thisRef.dropChild(child)
+    }
+
     /**
      * Implement先の[RenderObject.attach]で必ず呼ぶ
      */
     fun attachChildren(owner: RenderPipeline) {
         for(child in children) {
             child.attach(owner)
+        }
+    }
+
+    /**
+     * Implement先の[RenderObject.detach]で必ず呼ぶ
+     */
+    fun detachChildren() {
+        for(child in children) {
+            child.detach()
         }
     }
 
@@ -235,5 +291,31 @@ interface ContainerRenderObject<ChildType : RenderObject> {
         for(child in children) {
             child.let(callback)
         }
+    }
+}
+
+class MarkPaintProperty<T>(initialValue: T) {
+    var child: T = initialValue
+    operator fun getValue(thisRef: RenderObject, property: KProperty<*>): T {
+        return child
+    }
+
+    operator fun setValue(thisRef: RenderObject, property: KProperty<*>, value: T) {
+        if(child == value) return
+        child = value
+        thisRef.markNeedsPaint()
+    }
+}
+
+class MarkLayoutProperty<T>(initialValue: T) {
+    var child: T = initialValue
+    operator fun getValue(thisRef: RenderObject, property: KProperty<*>): T {
+        return child
+    }
+
+    operator fun setValue(thisRef: RenderObject, property: KProperty<*>, value: T) {
+        if(child == value) return
+        child = value
+        thisRef.markNeedsLayout()
     }
 }

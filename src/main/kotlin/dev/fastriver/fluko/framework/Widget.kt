@@ -5,14 +5,32 @@ import dev.fastriver.fluko.framework.geometrics.*
 import dev.fastriver.fluko.framework.render.*
 
 abstract class Widget {
+    companion object {
+        fun canUpdate(oldWidget: Widget, newWidget: Widget): Boolean {
+            return oldWidget::class == newWidget::class
+                && oldWidget.key == newWidget.key
+        }
+    }
+
+    val key: Key? = null
+
     abstract fun createElement(): Element
 }
 
 abstract class RenderObjectWidget : Widget() {
     abstract fun createRenderObject(): RenderObject
 
-    // abstract fun updateRenderObject(renderObject: RenderObject)
-    // abstract fun didUnmountRenderObject(renderObject: RenderObject)
+    /**
+     * RenderObjectの情報を更新する
+     *
+     * [Element.performRebuild]で発火される
+     */
+    open fun updateRenderObject(renderObject: RenderObject) { }
+
+    /**
+     * 関連付けられたRenderObjectが消されたときに呼ばれる
+     */
+    open fun didUnmountRenderObject(renderObject: RenderObject) { }
 }
 
 class RenderObjectToWidgetAdapter(
@@ -22,10 +40,21 @@ class RenderObjectToWidgetAdapter(
 
     override fun createRenderObject(): RenderView = container
 
-    fun attachToRenderTree(): RenderObjectToWidgetElement {
-        val element = createElement() as RenderObjectToWidgetElement
-        element.mount(null)
-        return element
+    fun attachToRenderTree(owner: BuildOwner, element: RenderObjectToWidgetElement? = null): RenderObjectToWidgetElement {
+        val result: RenderObjectToWidgetElement
+        if(element == null) {
+            result = createElement() as RenderObjectToWidgetElement
+            result.owner = owner
+            owner.buildScope {
+                result.mount(null)
+            }
+        }
+        else {
+            result = element
+            result.newWidget = this
+            result.markNeedsBuild()
+        }
+        return result
     }
 }
 
@@ -53,9 +82,17 @@ class SizedBox(
     val width: Double? = null,
     val height: Double? = null
 ): SingleChildRenderObjectWidget(child) {
+    private val additionalConstraints: BoxConstraints
+        get() = BoxConstraints.tightFor(width, height)
+
     override fun createRenderObject(): RenderObject = RenderConstrainedBox(
         additionalConstraints = BoxConstraints.tightFor(width, height)
     )
+
+    override fun updateRenderObject(renderObject: RenderObject) {
+        renderObject as RenderConstrainedBox
+        renderObject.additionalConstraints = additionalConstraints
+    }
 }
 
 class ColoredBox(
@@ -63,6 +100,11 @@ class ColoredBox(
     val color: Int,
 ): SingleChildRenderObjectWidget(child) {
     override fun createRenderObject(): RenderObject = RenderColoredBox(color)
+
+    override fun updateRenderObject(renderObject: RenderObject) {
+        renderObject as RenderColoredBox
+        renderObject.color = color
+    }
 }
 
 class Align(
@@ -93,6 +135,16 @@ class Flex(
             direction, mainAxisAlignment, mainAxisSize, crossAxisAlignment, verticalDirection
         )
     }
+
+    override fun updateRenderObject(renderObject: RenderObject) {
+        (renderObject as RenderFlex).let {
+            it.direction = direction
+            it.mainAxisAlignment = mainAxisAlignment
+            it.mainAxisSize = mainAxisSize
+            it.crossAxisAlignment = crossAxisAlignment
+            it.verticalDirection = verticalDirection
+        }
+    }
 }
 
 class RichText(
@@ -102,5 +154,11 @@ class RichText(
         return RenderParagraph(
             text
         )
+    }
+
+    override fun updateRenderObject(renderObject: RenderObject) {
+        (renderObject as RenderParagraph).let {
+            it.text = text
+        }
     }
 }

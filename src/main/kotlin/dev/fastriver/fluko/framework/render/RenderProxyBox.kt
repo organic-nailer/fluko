@@ -3,7 +3,6 @@ package dev.fastriver.fluko.framework.render
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
-import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 
 abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
@@ -26,6 +25,11 @@ abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
     override fun attach(owner: RenderPipeline) {
         super.attach(owner)
         attachChild(owner)
+    }
+
+    override fun detach() {
+        super.detach()
+        detachChild()
     }
 
     override fun visitChildren(visitor: RenderObjectVisitor) {

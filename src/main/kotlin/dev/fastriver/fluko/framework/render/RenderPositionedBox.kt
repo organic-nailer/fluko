@@ -5,11 +5,16 @@ import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.Alignment
-import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 
 class RenderPositionedBox(
-    val widthFactor: Double? = null, val heightFactor: Double? = null, val alignment: Alignment = Alignment.center
+    widthFactor: Double? = null,
+    heightFactor: Double? = null,
+    alignment: Alignment = Alignment.center
 ) : RenderBox(), RenderObjectWithChild<RenderBox> {
+    var widthFactor: Double? by MarkLayoutProperty(widthFactor)
+    var heightFactor: Double? by MarkLayoutProperty(heightFactor)
+    var alignment: Alignment by MarkLayoutProperty(alignment)
+
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
 
     override fun setupParentData(child: RenderObject) {
@@ -55,6 +60,11 @@ class RenderPositionedBox(
     override fun attach(owner: RenderPipeline) {
         super.attach(owner)
         attachChild(owner)
+    }
+
+    override fun detach() {
+        super.detach()
+        detachChild()
     }
 
     override fun visitChildren(visitor: RenderObjectVisitor) {

@@ -27,6 +27,11 @@ class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWi
         attachChild(owner)
     }
 
+    override fun detach() {
+        super.detach()
+        detachChild()
+    }
+
     override fun visitChildren(visitor: RenderObjectVisitor) {
         super<RenderObjectWithChild>.visitChildren(visitor)
     }

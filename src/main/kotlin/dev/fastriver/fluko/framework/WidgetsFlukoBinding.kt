@@ -1,7 +1,9 @@
 package dev.fastriver.fluko.framework
 
 import dev.fastriver.fluko.common.layer.ContainerLayer
+import dev.fastriver.fluko.framework.element.BuildOwner
 import dev.fastriver.fluko.framework.element.Element
+import dev.fastriver.fluko.framework.element.RenderObjectToWidgetElement
 import dev.fastriver.fluko.framework.render.RenderView
 
 object WidgetsFlukoBinding: WidgetsBinding {
@@ -10,6 +12,8 @@ object WidgetsFlukoBinding: WidgetsBinding {
     var renderViewElement: Element? = null
     var initialized = false
     var engineConnected = false
+    var buildOwner: BuildOwner = BuildOwner { handleBuildScheduled() }
+    private var needToReportFirstFrame = true
     override fun connectToEngine(engine: Engine) {
         this.engine = engine
         engineConnected = true
@@ -32,16 +36,20 @@ object WidgetsFlukoBinding: WidgetsBinding {
         }
     }
 
-    fun ensureVisualUpdate() {
+    private fun ensureVisualUpdate() {
         //TODO: schedulerPhase
         engine.scheduleFrame()
+    }
+
+    private fun handleBuildScheduled() {
+        ensureVisualUpdate()
     }
 
     fun attachRootWidget(rootWidget: Widget) {
         val isBootstrapFrame = renderViewElement == null
         renderViewElement = RenderObjectToWidgetAdapter(
             rootWidget, pipeline.renderView!!
-        ).attachToRenderTree()
+        ).attachToRenderTree(buildOwner, renderViewElement as RenderObjectToWidgetElement?)
         if(isBootstrapFrame) {
             ensureVisualUpdate()
         }
@@ -56,7 +64,18 @@ object WidgetsFlukoBinding: WidgetsBinding {
         drawFrame()
     }
 
+    /**
+     * 次フレームを描画する
+     *
+     * WidgetsBinding.drawFrame() -> RendererBinding.drawFrame()
+     */
     fun drawFrame() {
+        // WidgetsBinding.drawFrame
+        if(renderViewElement != null) {
+            buildOwner.buildScope()
+        }
+
+        // RendererBinding.drawFrame
         pipeline.flushLayout()
         pipeline.flushPaint()
         engine.render(pipeline.renderView!!.layer as ContainerLayer)

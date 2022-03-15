@@ -50,10 +50,6 @@ class RenderPipeline(
                 PaintingContext.repaintCompositedChild(node)
             }
         }
-//        val rootLayer = renderView!!.layer
-//        val context = PaintingContext(rootLayer, renderView!!.size.and(Offset.zero))
-//        renderView!!.paint(context, Offset.zero)
-//        context.stopRecordingIfNeeded()
     }
 
     fun requestVisualUpdate() {

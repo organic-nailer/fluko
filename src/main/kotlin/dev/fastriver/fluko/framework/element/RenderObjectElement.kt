@@ -7,19 +7,126 @@ import dev.fastriver.fluko.framework.render.RenderObject
 abstract class RenderObjectElement(
     widget: RenderObjectWidget
 ) : Element(widget) {
-    override var widget: Widget? = super.widget as RenderObjectWidget
+    private val widgetCasted: RenderObjectWidget
+        get() = widget as RenderObjectWidget
 
-    var renderObject: RenderObject? = null
+    override val renderObject: RenderObject?
+        get() = renderObjectInternal
+    private var renderObjectInternal: RenderObject? = null
+
+    private var ancestorRenderObjectElement: RenderObjectElement? = null
 
     override fun mount(parent: Element?) {
         super.mount(parent)
-        renderObject = (widget as RenderObjectWidget).createRenderObject()
+        renderObjectInternal = (widget as RenderObjectWidget).createRenderObject()
         attachRenderObject()
+        dirty = false
+    }
+
+    override fun update(newWidget: Widget) {
+        super.update(newWidget)
+        performRebuild()
+    }
+
+    override fun performRebuild() {
+        widgetCasted.updateRenderObject(renderObject!!)
+        dirty = false
+    }
+
+    protected fun updateChildren(
+        oldChildren: List<Element>,
+        newWidgets: List<Widget>,
+        forgottenChildren: Set<Element>? = null
+    ): List<Element> {
+        fun replaceWithNullIfForgotten(child: Element): Element? {
+            return if(forgottenChildren?.contains(child) == true) null else child
+        }
+
+        var newChildrenTop = 0
+        var oldChildrenTop = 0
+        var newChildrenBottom = newWidgets.size - 1
+        var oldChildrenBottom = oldChildren.size - 1
+
+        val newChildren: MutableList<Element?> =
+            if(oldChildren.size == newWidgets.size) oldChildren.toMutableList() else (1..newWidgets.size).map { null }
+                .toMutableList()
+
+        while((oldChildrenTop <= oldChildrenBottom) && (newChildrenTop <= newChildrenBottom)) {
+            val oldChild = replaceWithNullIfForgotten(oldChildren[oldChildrenTop])
+            val newWidget = newWidgets[newChildrenTop]
+            if(oldChild == null || !Widget.canUpdate(oldChild.widget!!, newWidget)) {
+                break
+            }
+            val newChild = updateChild(oldChild, newWidget)
+            newChildren[newChildrenTop] = newChild
+            newChildrenTop++
+            oldChildrenTop++
+        }
+
+        while((oldChildrenTop <= oldChildrenBottom) && (newChildrenTop <= newChildrenBottom)) {
+            val oldChild = replaceWithNullIfForgotten(oldChildren[oldChildrenBottom])
+            val newWidget = newWidgets[newChildrenBottom]
+            if(oldChild == null || !Widget.canUpdate(oldChild.widget!!, newWidget)) {
+                break
+            }
+            newChildrenTop--
+            oldChildrenTop--
+        }
+
+        val haveOldChildren = oldChildrenTop <= oldChildrenBottom
+        if(haveOldChildren) {
+            while(oldChildrenTop <= oldChildrenBottom) {
+                val oldChild = replaceWithNullIfForgotten(oldChildren[oldChildrenTop])
+                if(oldChild != null) {
+                    // TODO: keyed
+                    deactivateChild(oldChild)
+                }
+                oldChildrenTop++
+            }
+        }
+
+        while(newChildrenTop <= newChildrenBottom) {
+            val oldChild: Element? = null
+            val newWidget = newWidgets[newChildrenTop]
+            val newChild = updateChild(oldChild, newWidget)
+            newChildren[newChildrenTop] = newChild
+            newChildrenTop++
+        }
+
+        newChildrenBottom = newWidgets.size - 1
+        oldChildrenBottom = oldChildren.size - 1
+
+        while((oldChildrenTop <= oldChildrenBottom) && (newChildrenTop <= newChildrenBottom)) {
+            val oldChild = oldChildren[oldChildrenTop]
+            val newWidget = newWidgets[newChildrenTop]
+            val newChild = updateChild(oldChild, newWidget)
+            newChildren[newChildrenTop] = newChild
+            newChildrenTop++
+            oldChildrenTop++
+        }
+
+        return newChildren.mapNotNull { it }
+    }
+
+    override fun unmount() {
+        val oldWidget = widgetCasted
+        super.unmount()
+        // oldWidget.didUnmountRenderObject(renderObject)
+        renderObject!!.dispose()
+        renderObjectInternal = null
     }
 
     override fun attachRenderObject() {
-        val ancestorRenderObjectElement = findAncestorRenderObjectElement()
+        ancestorRenderObjectElement = findAncestorRenderObjectElement()
         ancestorRenderObjectElement?.insertRenderObjectChild(renderObject!!)
+        //TODO: parentDataElement
+    }
+
+    override fun detachRenderObject() {
+        if(ancestorRenderObjectElement != null) {
+            ancestorRenderObjectElement!!.removeRenderObjectChild(renderObject!!)
+            ancestorRenderObjectElement = null
+        }
     }
 
     /**
@@ -41,4 +148,7 @@ abstract class RenderObjectElement(
 
     }
 
+    open fun removeRenderObjectChild(child: RenderObject) {
+
+    }
 }

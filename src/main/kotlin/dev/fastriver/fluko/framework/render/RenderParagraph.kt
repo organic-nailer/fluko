@@ -14,8 +14,16 @@ import org.jetbrains.skija.paragraph.ParagraphStyle
 import kotlin.math.ceil
 
 class RenderParagraph(
-    val text: TextSpan
+    text: TextSpan
 ): RenderBox(), ContainerRenderObject<RenderBox> {
+    var text: TextSpan = text
+        set(value) {
+            if(field == value) return
+            field = value
+            markNeedsLayout()
+            // TODO: 実際はもっと色々ある
+        }
+
     override val thisRef: RenderObject = this
     override val children: MutableList<RenderBox> = mutableListOf()
     private val textPainter = TextPainter(text)
@@ -39,6 +47,11 @@ class RenderParagraph(
     override fun attach(owner: RenderPipeline) {
         super.attach(owner)
         attachChildren(owner)
+    }
+
+    override fun detach() {
+        super.detach()
+        detachChildren()
     }
 
     override fun visitChildren(visitor: RenderObjectVisitor) {
