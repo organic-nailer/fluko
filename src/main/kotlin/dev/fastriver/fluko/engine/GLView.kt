@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.engine
 
+import dev.fastriver.fluko.common.PointerEvent
 import org.jetbrains.skija.DirectContext
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
