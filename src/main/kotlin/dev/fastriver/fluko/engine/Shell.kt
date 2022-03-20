@@ -6,10 +6,10 @@ import dev.fastriver.fluko.framework.*
 
 class Shell(
     val taskRunners: TaskRunners,
-    var glView: GLView,
     var rasterizer: Rasterizer?,
     val width: Int, val height: Int
-): Engine {
+): Engine, GLView.GLViewDelegate {
+    var glView: GLView = GLView(width, height, this)
     private var binding: WidgetsBinding = WidgetsFlukoBinding
     private var vsyncCallback: (() -> Unit)? = null
 
@@ -48,6 +48,10 @@ class Shell(
             rasterizer!!.drawToSurface(layerTree)
             glView.swapBuffers()
         }
+    }
+
+    override fun onPointerEvent(event: PointerEvent) {
+        println(event)
     }
 
     fun run(appMain: () -> Unit) {
