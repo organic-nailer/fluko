@@ -3,6 +3,7 @@ package dev.fastriver.fluko.framework.render
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
+import dev.fastriver.fluko.framework.gesture.HitTestResult
 
 abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
@@ -38,5 +39,9 @@ abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
 
     override fun redepthChildren() {
         super<RenderObjectWithChild>.redepthChildren { redepthChild(it) }
+    }
+
+    override fun hitTestChildren(result: HitTestResult, position: Offset): Boolean {
+        return child?.hitTest(result, position) ?: false
     }
 }

@@ -15,9 +15,23 @@ fun appMain() {
             child = Flex(
                 children = listOf(
                     SizedBox(
-                        child = ColoredBox(
-                            child = null,
-                            color = 0xFFFF0000.toInt()
+                        child = Listener(
+                            child = ColoredBox(
+                                child = null,
+                                color = 0xFFFF0000.toInt()
+                            ),
+                            onPointerDown = {
+                                println("PointerDown: ${it.position}")
+                            },
+                            onPointerMove = {
+                                println("PointerMove: ${it.position}")
+                            },
+                            onPointerUp = {
+                                println("PointerUp  : ${it.position}")
+                            },
+                            onPointerCancel = {
+                                println("PointerCancel: ${it.position}")
+                            }
                         ),
                         width = 100.0,
                         height = 100.0
@@ -35,39 +49,6 @@ fun appMain() {
                         ),
                         width = 200.0,
                         height = 50.0
-
-                    ),
-                ),
-                direction = Axis.Vertical
-            )
-        )
-    )
-
-    runApp(
-        Align(
-            child = Flex(
-                children = listOf(
-                    SizedBox(
-                        child = ColoredBox(
-                            child = null,
-                            color = 0xFFFF0000.toInt()
-                        ),
-                        width = 100.0,
-                        height = 100.0
-                    ),
-                    SizedBox(
-                        child = RichText(
-                            text = TextSpan("Hello Hello Hello Hello, Fluko!")
-                        ),
-                        width = 200.0
-                    ),
-                    SizedBox(
-                        child = ColoredBox(
-                            child = null,
-                            color = 0xFF0000FF.toInt()
-                        ),
-                        width = 100.0,
-                        height = 100.0
 
                     ),
                 ),

@@ -6,10 +6,12 @@ import dev.fastriver.fluko.common.layer.ContainerLayer
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
+import dev.fastriver.fluko.framework.gesture.HitTestResult
+import dev.fastriver.fluko.framework.gesture.HitTestTarget
 import javax.swing.Box
 import kotlin.reflect.KProperty
 
-abstract class RenderObject {
+abstract class RenderObject: HitTestTarget {
     companion object {
         private val cleanChildRelayoutBoundary: RenderObjectVisitor = {
             it.cleanRelayoutBounary()
@@ -291,6 +293,30 @@ interface ContainerRenderObject<ChildType : RenderObject> {
         for(child in children) {
             child.let(callback)
         }
+    }
+
+    /**
+     * 複数の子を持つ場合の標準のHitTest
+     *
+     * [ChildType] is [RenderBox] のときのみ呼び出し可
+     *
+     * どれかの子に判定があれば即終了する
+     */
+    fun defaultHitTestChildren(result: HitTestResult, position: Offset): Boolean {
+        for(child in children) {
+            val childParentData = child.parentData as BoxParentData
+            val isHit = result.addWithPaintOffset(
+                offset = childParentData.offset,
+                position = position,
+                hitTest = { result, transformed ->
+                    (child as RenderBox).hitTest(result, transformed)
+                }
+            )
+            if(isHit) {
+                return true
+            }
+        }
+        return false
     }
 }
 

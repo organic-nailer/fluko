@@ -1,12 +1,16 @@
 package dev.fastriver.fluko.framework.render
 
 import dev.fastriver.fluko.common.Offset
+import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.common.layer.ContainerLayer
 import dev.fastriver.fluko.common.layer.TransformLayer
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
+import dev.fastriver.fluko.framework.gesture.HitTestEntry
+import dev.fastriver.fluko.framework.gesture.HitTestResult
+import dev.fastriver.fluko.framework.gesture.HitTestTarget
 
 class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWithChild<RenderBox> {
     override var size: Size = Size(width, height)
@@ -53,5 +57,15 @@ class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWi
     private fun scheduleInitialPaint(rootLayer: ContainerLayer) {
         layer = rootLayer
         owner!!.nodesNeedingPaint.add(this)
+    }
+
+    fun hitTest(result: HitTestResult, position: Offset): Boolean {
+        child?.hitTest(result, position)
+        result.add(HitTestEntry(this))
+        return true
+    }
+
+    override fun handleEvent(event: PointerEvent, entry: HitTestEntry) {
+        // Do Nothing
     }
 }

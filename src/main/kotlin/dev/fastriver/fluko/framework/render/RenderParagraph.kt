@@ -5,6 +5,7 @@ import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
+import dev.fastriver.fluko.framework.gesture.HitTestResult
 import org.jetbrains.skija.Canvas
 import org.jetbrains.skija.FontMgr
 import org.jetbrains.skija.paragraph.FontCollection
@@ -60,6 +61,13 @@ class RenderParagraph(
 
     override fun redepthChildren() {
         super<ContainerRenderObject>.redepthChildren { redepthChild(it) }
+    }
+
+    override fun hitTestSelf(position: Offset): Boolean = true
+
+    override fun hitTestChildren(result: HitTestResult, position: Offset): Boolean {
+        // spanがHitTestTargetの子を持つ場合や、childrenを持つ場合はそれらを処理する必要がある
+        return false
     }
 }
 

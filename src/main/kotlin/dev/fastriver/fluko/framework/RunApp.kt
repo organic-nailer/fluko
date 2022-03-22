@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.framework
 
+import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.layer.Layer
 
 fun runApp(app: Widget) {
@@ -22,4 +23,6 @@ interface WidgetsBinding {
     fun connectToEngine(engine: Engine)
 
     fun beginFrame()
+
+    fun handlePointerEvent(event: PointerEvent)
 }

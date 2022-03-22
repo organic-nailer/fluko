@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.engine
 
+import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.layer.Layer
 import dev.fastriver.fluko.common.layer.LayerTree
 import dev.fastriver.fluko.framework.*
@@ -51,7 +52,7 @@ class Shell(
     }
 
     override fun onPointerEvent(event: PointerEvent) {
-        println(event)
+        binding.handlePointerEvent(event)
     }
 
     fun run(appMain: () -> Unit) {

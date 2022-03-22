@@ -107,6 +107,33 @@ class ColoredBox(
     }
 }
 
+class Listener(
+    child: Widget? = null,
+    val onPointerDown: PointerEventListener? = null,
+    val onPointerMove: PointerEventListener? = null,
+    val onPointerUp: PointerEventListener? = null,
+    val onPointerCancel: PointerEventListener? = null,
+): SingleChildRenderObjectWidget(child) {
+    override fun createRenderObject(): RenderObject {
+        return RenderPointerListener(
+            onPointerDown,
+            onPointerMove,
+            onPointerUp,
+            onPointerCancel
+        )
+    }
+
+    override fun updateRenderObject(renderObject: RenderObject) {
+        renderObject as RenderPointerListener
+        renderObject.let {
+            it.onPointerDown = onPointerDown
+            it.onPointerMove = onPointerMove
+            it.onPointerUp = onPointerUp
+            it.onPointerCancel = onPointerCancel
+        }
+    }
+}
+
 class Align(
     child: Widget?,
     val alignment: Alignment = Alignment.center,

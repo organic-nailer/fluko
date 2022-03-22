@@ -1,12 +1,18 @@
 package dev.fastriver.fluko.framework
 
+import dev.fastriver.fluko.common.Offset
+import dev.fastriver.fluko.common.PointerEvent
+import dev.fastriver.fluko.common.PointerEventPhase
 import dev.fastriver.fluko.common.layer.ContainerLayer
 import dev.fastriver.fluko.framework.element.BuildOwner
 import dev.fastriver.fluko.framework.element.Element
 import dev.fastriver.fluko.framework.element.RenderObjectToWidgetElement
+import dev.fastriver.fluko.framework.gesture.HitTestEntry
+import dev.fastriver.fluko.framework.gesture.HitTestResult
+import dev.fastriver.fluko.framework.gesture.HitTestTarget
 import dev.fastriver.fluko.framework.render.RenderView
 
-object WidgetsFlukoBinding: WidgetsBinding {
+object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
     lateinit var pipeline: RenderPipeline
     lateinit var engine: Engine
     var renderViewElement: Element? = null
@@ -14,6 +20,8 @@ object WidgetsFlukoBinding: WidgetsBinding {
     var engineConnected = false
     var buildOwner: BuildOwner = BuildOwner { handleBuildScheduled() }
     private var needToReportFirstFrame = true
+    private val hitTests = mutableMapOf<Int, HitTestResult>()
+
     override fun connectToEngine(engine: Engine) {
         this.engine = engine
         engineConnected = true
@@ -79,5 +87,46 @@ object WidgetsFlukoBinding: WidgetsBinding {
         pipeline.flushLayout()
         pipeline.flushPaint()
         engine.render(pipeline.renderView!!.layer as ContainerLayer)
+    }
+
+    override fun handlePointerEvent(event: PointerEvent) {
+        // GestureBinding._handlePointerEventImmediately()
+        var hitTestResult: HitTestResult? = null
+        if(event.phase == PointerEventPhase.Down) {
+            hitTestResult = HitTestResult()
+            hitTest(hitTestResult, event.position)
+            hitTests[event.pointerId] = hitTestResult
+        } else if(event.phase == PointerEventPhase.Up || event.phase == PointerEventPhase.Cancel) {
+            hitTestResult = hitTests.remove(event.pointerId)
+        } else if(event.phase == PointerEventPhase.Move) {
+            hitTestResult = hitTests[event.pointerId]
+        }
+        if(hitTestResult != null || event.phase == PointerEventPhase.Add || event.phase == PointerEventPhase.Remove) {
+            dispatchEvent(event, hitTestResult)
+        }
+    }
+
+    private fun hitTest(hitTestResult: HitTestResult, position: Offset) {
+        // RendererBinding.hitTest()
+        pipeline.renderView!!.hitTest(hitTestResult, position)
+        // GestureBinding.hitTest()
+        hitTestResult.add(HitTestEntry(this))
+    }
+
+    override fun handleEvent(event: PointerEvent, entry: HitTestEntry) {
+        // TODO: Gesture handling
+    }
+
+    private fun dispatchEvent(event: PointerEvent, hitTestResult: HitTestResult?) {
+        //TODO: MouseTrackerEvent
+
+        if(hitTestResult == null) {
+            assert(event.phase == PointerEventPhase.Add || event.phase == PointerEventPhase.Remove)
+            // pointerRouter.route(event)
+            return
+        }
+        for(entry in hitTestResult.path) {
+            entry.target.handleEvent(event.apply { transform = entry.transform }, entry)
+        }
     }
 }

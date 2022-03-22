@@ -5,6 +5,7 @@ import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.*
 import dev.fastriver.fluko.framework.geometrics.*
+import dev.fastriver.fluko.framework.gesture.HitTestResult
 import kotlin.math.max
 
 class RenderFlex(
@@ -33,6 +34,10 @@ class RenderFlex(
 
     override fun redepthChildren() {
         super<ContainerRenderObject>.redepthChildren { redepthChild(it) }
+    }
+
+    override fun hitTestChildren(result: HitTestResult, position: Offset): Boolean {
+        return defaultHitTestChildren(result, position)
     }
 
     private fun getMainSize(size: Size): Double {

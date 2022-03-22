@@ -5,6 +5,7 @@ import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.Alignment
+import dev.fastriver.fluko.framework.gesture.HitTestResult
 
 class RenderPositionedBox(
     widthFactor: Double? = null,
@@ -73,5 +74,19 @@ class RenderPositionedBox(
 
     override fun redepthChildren() {
         super<RenderObjectWithChild>.redepthChildren { redepthChild(it) }
+    }
+
+    override fun hitTestChildren(result: HitTestResult, position: Offset): Boolean {
+        if(child != null) {
+            val childParentData = child!!.parentData as BoxParentData
+            return result.addWithPaintOffset(
+                offset = childParentData.offset,
+                position = position,
+                hitTest = { result, transformed ->
+                    child!!.hitTest(result, transformed)
+                }
+            )
+        }
+        return false
     }
 }
