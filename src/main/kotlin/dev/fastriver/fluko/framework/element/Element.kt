@@ -6,13 +6,17 @@ import dev.fastriver.fluko.framework.render.RenderObject
 // TODO: inheritance
 // TODO: GlobalKey
 abstract class Element(
-    open var widget: Widget?
-): Comparable<Element> {
+    widget: Widget
+) : Comparable<Element>, BuildContext {
     var parent: Element? = null
     var depth: Int = 0
-    var owner: BuildOwner? = null
+    override var owner: BuildOwner? = null
     var dirty: Boolean = true
     var inDirtyList: Boolean = false
+
+    override val widget: Widget
+        get() = widgetInternal!!
+    private var widgetInternal: Widget? = widget
 
     /**
      * 自分と子を探索して一番近い[RenderObjectElement]の持つ[RenderObject]を返す
@@ -23,8 +27,7 @@ abstract class Element(
             fun visit(element: Element) {
                 if(element is RenderObjectElement) {
                     result = element.renderObject
-                }
-                else {
+                } else {
                     element.visitChildren { visit(it) }
                 }
             }
@@ -37,7 +40,7 @@ abstract class Element(
     /**
      * 子へのアクセス。子を持つElementはoverrideすること
      */
-    open fun visitChildren(visitor: ElementVisitor) {
+    protected open fun visitChildren(visitor: ElementVisitor) {
 
     }
 
@@ -55,38 +58,37 @@ abstract class Element(
     /**
      * 子となるWidget/Elementをとりそれらをツリー下部として展開する
      */
-    fun updateChild(child: Element?, newWidget: Widget?): Element? {
+    protected fun updateChild(child: Element?, newWidget: Widget?): Element? {
         if(newWidget == null) {
-            if (child != null) {
+            if(child != null) {
                 deactivateChild(child)
             }
             return null
         }
         if(child != null) {
-            val newChild: Element
-            // Flutterではここで`hasSameSuperclass`ということを確認しているが、
+            val newChild: Element // Flutterではここで`hasSameSuperclass`ということを確認しているが、
             // HotReloadによるStatefulElementとStatelessElementの置換を検知するものなので
             // 省略する
-            if (child.widget == newWidget) {
+            if(child.widget == newWidget) {
                 newChild = child
-            }
-            else if(Widget.canUpdate(child.widget!!, newWidget)) {
+            } else if(Widget.canUpdate(child.widget, newWidget)) {
                 child.update(newWidget)
                 newChild = child
-            }
-            else {
+            } else {
                 deactivateChild(child)
                 newChild = inflateWidget(newWidget)
             }
             return newChild
-        }
-        else {
+        } else {
             return inflateWidget(newWidget)
         }
     }
 
+    /**
+     * Widgetが更新されたがElementを使い回すために状態を更新する
+     */
     open fun update(newWidget: Widget) {
-        widget = newWidget
+        widgetInternal = newWidget
     }
 
     /**
@@ -101,7 +103,7 @@ abstract class Element(
     /**
      * 自身がRenderObjectを持つ場合はRenderツリーにそれを追加する
      */
-    open fun attachRenderObject() {}
+    protected open fun attachRenderObject() {}
 
     open fun detachRenderObject() {
         visitChildren {
@@ -109,35 +111,35 @@ abstract class Element(
         }
     }
 
-    fun deactivateChild(child: Element) {
+    protected fun deactivateChild(child: Element) {
         child.parent = null
         child.detachRenderObject()
     }
 
-//    fun forgetChild(child: Element) {
-//        // TODO: implement
-//    }
+    //    fun forgetChild(child: Element) {
+    //        // TODO: implement
+    //    }
 
-    fun activate() {
-        if(dirty) {
-            owner!!.scheduleBuildFor(this)
-        }
-    }
+    //    fun activate() {
+    //        if(dirty) {
+    //            owner!!.scheduleBuildFor(this)
+    //        }
+    //    }
 
-    fun deactivate() {
-        // TODO: dependencies
-    }
+    //    fun deactivate() {
+    //        // TODO: dependencies
+    //    }
 
-    open fun unmount() {
-        widget = null
-    }
+    //    open fun unmount() {
+    //        widgetInternal = null
+    //    }
 
-    fun didChangeDependencies() {
-        markNeedsBuild()
-    }
+    //    fun didChangeDependencies() {
+    //        markNeedsBuild()
+    //    }
 
     fun markNeedsBuild() {
-        if (dirty) return
+        if(dirty) return
         dirty = true
         owner!!.scheduleBuildFor(this)
     }
@@ -146,7 +148,7 @@ abstract class Element(
         performRebuild()
     }
 
-    abstract fun performRebuild()
+    protected abstract fun performRebuild()
 
     /**
      * 階層が深いほど大きく、同じ深さならdirtyな方が大きい

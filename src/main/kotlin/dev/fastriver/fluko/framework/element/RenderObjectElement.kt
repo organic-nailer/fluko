@@ -34,9 +34,7 @@ abstract class RenderObjectElement(
     }
 
     protected fun updateChildren(
-        oldChildren: List<Element>,
-        newWidgets: List<Widget>,
-        forgottenChildren: Set<Element>? = null
+        oldChildren: List<Element>, newWidgets: List<Widget>, forgottenChildren: Set<Element>? = null
     ): List<Element> {
         fun replaceWithNullIfForgotten(child: Element): Element? {
             return if(forgottenChildren?.contains(child) == true) null else child
@@ -77,8 +75,7 @@ abstract class RenderObjectElement(
         if(haveOldChildren) {
             while(oldChildrenTop <= oldChildrenBottom) {
                 val oldChild = replaceWithNullIfForgotten(oldChildren[oldChildrenTop])
-                if(oldChild != null) {
-                    // TODO: keyed
+                if(oldChild != null) { // TODO: keyed
                     deactivateChild(oldChild)
                 }
                 oldChildrenTop++
@@ -108,18 +105,17 @@ abstract class RenderObjectElement(
         return newChildren.mapNotNull { it }
     }
 
-    override fun unmount() {
-        val oldWidget = widgetCasted
-        super.unmount()
-        // oldWidget.didUnmountRenderObject(renderObject)
-        renderObject!!.dispose()
-        renderObjectInternal = null
-    }
+    //    override fun unmount() {
+    //        val oldWidget = widgetCasted
+    //        super.unmount()
+    //        // oldWidget.didUnmountRenderObject(renderObject)
+    //        renderObject!!.dispose()
+    //        renderObjectInternal = null
+    //    }
 
     override fun attachRenderObject() {
         ancestorRenderObjectElement = findAncestorRenderObjectElement()
-        ancestorRenderObjectElement?.insertRenderObjectChild(renderObject!!)
-        //TODO: parentDataElement
+        ancestorRenderObjectElement?.insertRenderObjectChild(renderObject!!) //TODO: parentDataElement
     }
 
     override fun detachRenderObject() {
