@@ -4,6 +4,8 @@ import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.layer.Layer
 import dev.fastriver.fluko.common.layer.LayerTree
 import dev.fastriver.fluko.framework.*
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 class Shell(
     val taskRunners: TaskRunners,
@@ -12,7 +14,8 @@ class Shell(
 ): Engine, GLView.GLViewDelegate {
     var glView: GLView = GLView(width, height, this)
     private var binding: WidgetsBinding = WidgetsFlukoBinding
-    private var vsyncCallback: (() -> Unit)? = null
+    private var vsyncCallback: ((Duration) -> Unit)? = null
+    private val timingMeasurer = TimingMeasurer()
 
     init {
         binding.connectToEngine(this)
@@ -28,12 +31,12 @@ class Shell(
 
     override fun scheduleFrame() {
         if(vsyncCallback == null) {
-            vsyncCallback = {
+            vsyncCallback = { elapsedTime ->
                 taskRunners.uiTaskRunner.postTask {
                     // Flutter Animatorだと分岐があるけど
                     // 基本的にlayerTreeは再利用されないようなので
                     // beginFrameのみを呼ぶ
-                    binding.beginFrame()
+                    binding.beginFrame(elapsedTime)
                 }
             }
         }
@@ -62,7 +65,8 @@ class Shell(
     }
 
     fun onVsync() {
-        vsyncCallback?.invoke()
+        val elapsedTime = timingMeasurer.getElapsedTime()
+        vsyncCallback?.invoke(elapsedTime)
         vsyncCallback = null
     }
 }

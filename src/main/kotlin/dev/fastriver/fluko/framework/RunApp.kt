@@ -2,6 +2,7 @@ package dev.fastriver.fluko.framework
 
 import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.layer.Layer
+import kotlin.time.Duration
 
 fun runApp(app: Widget) {
     WidgetsFlukoBinding.apply {
@@ -22,7 +23,7 @@ interface Engine {
 interface WidgetsBinding {
     fun connectToEngine(engine: Engine)
 
-    fun beginFrame()
+    fun beginFrame(elapsedTime: Duration)
 
     fun handlePointerEvent(event: PointerEvent)
 }

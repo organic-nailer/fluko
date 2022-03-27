@@ -162,6 +162,16 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         painter(childContext, offset)
         childContext.stopRecordingIfNeeded()
     }
+
+    fun pushOpacity(offset: Offset, alpha: Int, painter: PaintingContextCallback, oldLayer: OpacityLayer? = null): OpacityLayer {
+        val layer = oldLayer ?: OpacityLayer()
+        layer.let {
+            it.alpha = alpha
+            it.offset = offset
+        }
+        pushLayer(layer, painter, Offset.zero)
+        return layer
+    }
 }
 
 typealias PaintingContextCallback = (PaintingContext, Offset) -> Unit

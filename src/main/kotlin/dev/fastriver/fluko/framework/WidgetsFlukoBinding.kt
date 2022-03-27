@@ -11,6 +11,10 @@ import dev.fastriver.fluko.framework.gesture.HitTestEntry
 import dev.fastriver.fluko.framework.gesture.HitTestResult
 import dev.fastriver.fluko.framework.gesture.HitTestTarget
 import dev.fastriver.fluko.framework.render.RenderView
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+
+typealias FrameCallback = (Duration) -> Unit
 
 object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
     lateinit var pipeline: RenderPipeline
@@ -21,6 +25,9 @@ object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
     var buildOwner: BuildOwner = BuildOwner { handleBuildScheduled() }
     private var needToReportFirstFrame = true
     private val hitTests = mutableMapOf<Int, HitTestResult>()
+    private var nextFrameCallbackId = 0
+    private val transientCallbacks = mutableMapOf<Int, FrameCallback>()
+    private var hasScheduledFrame = false
 
     override fun connectToEngine(engine: Engine) {
         this.engine = engine
@@ -46,7 +53,7 @@ object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
 
     private fun ensureVisualUpdate() {
         //TODO: schedulerPhase
-        engine.scheduleFrame()
+        scheduleFrame()
     }
 
     private fun handleBuildScheduled() {
@@ -67,9 +74,20 @@ object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
 
     }
 
-    override fun beginFrame() {
+    override fun beginFrame(elapsedTime: Duration) {
         if(!initialized) return
+        hasScheduledFrame = false
+        // transient frame callbacks
+        val callbacks = transientCallbacks.values.toList()
+        transientCallbacks.clear()
+        for(callback in callbacks) {
+            callback(elapsedTime)
+        }
+
+        // persistent frame callbacks
         drawFrame()
+
+        // post frame callbacks
     }
 
     /**
@@ -77,7 +95,7 @@ object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
      *
      * WidgetsBinding.drawFrame() -> RendererBinding.drawFrame()
      */
-    fun drawFrame() {
+    private fun drawFrame() {
         // WidgetsBinding.drawFrame
         if(renderViewElement != null) {
             buildOwner.buildScope()
@@ -128,5 +146,23 @@ object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
         for(entry in hitTestResult.path) {
             entry.target.handleEvent(event.apply { transform = entry.transform }, entry)
         }
+    }
+
+    // SchedulerBinding
+    fun scheduleFrameCallback(callback: FrameCallback): Int {
+        scheduleFrame()
+        nextFrameCallbackId++
+        transientCallbacks[nextFrameCallbackId] = callback
+        return nextFrameCallbackId
+    }
+
+    fun cancelFrameCallback(id: Int) {
+        transientCallbacks.remove(id)
+    }
+
+    fun scheduleFrame() {
+        if(hasScheduledFrame) return
+        engine.scheduleFrame()
+        hasScheduledFrame = true
     }
 }

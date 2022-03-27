@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.framework
 
+import dev.fastriver.fluko.framework.animation.AnimationController
 import dev.fastriver.fluko.framework.element.*
 import dev.fastriver.fluko.framework.geometrics.*
 import dev.fastriver.fluko.framework.render.*
@@ -223,4 +224,21 @@ abstract class State<T: StatefulWidget> {
     abstract fun build(context: BuildContext): Widget
 
     open fun didChangeDependencies() {}
+}
+
+class FadeTransition(
+    val opacity: AnimationController,
+    child: Widget? = null
+): SingleChildRenderObjectWidget(child) {
+    override fun createRenderObject(): RenderObject {
+        return RenderAnimatedOpacity(
+            opacity = opacity
+        )
+    }
+
+    override fun updateRenderObject(renderObject: RenderObject) {
+        (renderObject as RenderAnimatedOpacity).let {
+            it.opacity = opacity
+        }
+    }
 }
