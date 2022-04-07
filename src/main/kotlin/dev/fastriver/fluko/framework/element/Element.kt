@@ -1,7 +1,9 @@
 package dev.fastriver.fluko.framework.element
 
+import dev.fastriver.fluko.framework.InheritedWidget
 import dev.fastriver.fluko.framework.Widget
 import dev.fastriver.fluko.framework.render.RenderObject
+import kotlin.reflect.KClass
 
 // TODO: inheritance
 // TODO: GlobalKey
@@ -53,6 +55,7 @@ abstract class Element(
         parent?.let {
             owner = it.owner
         }
+        updateInheritance()
     }
 
     /**
@@ -134,9 +137,9 @@ abstract class Element(
     //        widgetInternal = null
     //    }
 
-    //    fun didChangeDependencies() {
-    //        markNeedsBuild()
-    //    }
+    fun didChangeDependencies() {
+        markNeedsBuild()
+    }
 
     fun markNeedsBuild() {
         if(dirty) return
@@ -161,6 +164,37 @@ abstract class Element(
             dirty && !other.dirty -> return 1
         }
         return 0
+    }
+
+    var inheritedWidgets: MutableMap<KClass<*>, InheritedElement>? = null
+
+    /**
+     * 自分の依存しているInheritedElementを格納する場所
+     *
+     * [Element.deactivate]で自身を依存先のリストから消すために保持
+     */
+    private var dependencies = HashSet<InheritedElement>()
+
+    private fun dependOnInheritedElement(ancestor: InheritedElement): InheritedWidget {
+        dependencies.add(ancestor)
+        ancestor.updateDependencies(this)
+        return ancestor.widget as InheritedWidget
+    }
+
+    override fun <T: InheritedWidget> dependOnInheritedWidgetOfExactType(type: KClass<T>): T? {
+        val ancestor = if(inheritedWidgets == null) null else inheritedWidgets!![type]
+        if(ancestor != null) {
+            return dependOnInheritedElement(ancestor) as T
+        }
+        return null
+    }
+
+    override fun <T: InheritedWidget> getElementForInheritedWidgetOfExactType(type: KClass<T>): InheritedElement? {
+        return if(inheritedWidgets == null) null else inheritedWidgets!![type]
+    }
+
+    protected open fun updateInheritance() {
+        inheritedWidgets = parent?.inheritedWidgets
     }
 }
 

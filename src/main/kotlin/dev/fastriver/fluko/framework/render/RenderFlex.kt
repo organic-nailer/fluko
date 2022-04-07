@@ -83,7 +83,7 @@ class RenderFlex(
                     Axis.Vertical -> BoxConstraints(maxWidth = constraints.maxWidth)
                 }
             }
-            child.layout(innerConstraints)
+            child.layout(innerConstraints, parentUsesSize = true)
             val childSize = child.size
             allocatedSize += getMainSize(childSize)
             crossSize = max(crossSize, getCrossSize(childSize))

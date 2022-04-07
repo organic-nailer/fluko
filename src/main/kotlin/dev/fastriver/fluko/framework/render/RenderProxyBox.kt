@@ -10,7 +10,7 @@ abstract class RenderProxyBox : RenderBox(), RenderObjectWithChild<RenderBox> {
 
     override fun performLayout() {
         if(child != null) {
-            child!!.layout(constraints)
+            child!!.layout(constraints, parentUsesSize = true)
             size = child!!.size
         } else {
             size = constraints.smallest

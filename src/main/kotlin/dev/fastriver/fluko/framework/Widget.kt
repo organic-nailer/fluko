@@ -242,3 +242,11 @@ class FadeTransition(
         }
     }
 }
+
+abstract class InheritedWidget(
+    val child: Widget
+): Widget() {
+    override fun createElement(): Element = InheritedElement(this)
+
+    abstract fun updateShouldNotify(oldWidget: InheritedWidget): Boolean
+}

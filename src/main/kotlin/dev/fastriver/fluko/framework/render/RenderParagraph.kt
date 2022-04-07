@@ -17,17 +17,18 @@ import kotlin.math.ceil
 class RenderParagraph(
     text: TextSpan
 ): RenderBox(), ContainerRenderObject<RenderBox> {
-    var text: TextSpan = text
+    private val textPainter = TextPainter(text)
+    var text: TextSpan
+        get() = textPainter.text
         set(value) {
-            if(field == value) return
-            field = value
+            if(textPainter.text == value) return
+            textPainter.text = value
             markNeedsLayout()
             // TODO: 実際はもっと色々ある
         }
 
     override val thisRef: RenderObject = this
     override val children: MutableList<RenderBox> = mutableListOf()
-    private val textPainter = TextPainter(text)
 
     override fun performLayout() {
         textPainter.layout(
@@ -80,8 +81,14 @@ class TextSpan(
 }
 
 class TextPainter(
-    val text: TextSpan
+    text: TextSpan
 ) {
+    var text: TextSpan = text
+        set(value) {
+            if(field.text == value.text) return
+            field = value
+            markNeedsLayout()
+        }
     private var paragraph: Paragraph? = null
     private var lastMinWidth: Double? = null
     private var lastMaxWidth: Double? = null
@@ -89,7 +96,7 @@ class TextPainter(
     val height: Double get() = paragraph!!.height.toDouble()
     val size: Size get() = Size(width, height)
 
-    fun markNeedsLayout() {
+    private fun markNeedsLayout() {
         paragraph = null
     }
 
