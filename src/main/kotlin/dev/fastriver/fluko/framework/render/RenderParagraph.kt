@@ -16,7 +16,7 @@ import kotlin.math.ceil
 
 class RenderParagraph(
     text: TextSpan
-): RenderBox(), ContainerRenderObject<RenderBox> {
+) : RenderBox(), ContainerRenderObject<RenderBox> {
     private val textPainter = TextPainter(text)
     var text: TextSpan
         get() = textPainter.text
@@ -32,8 +32,7 @@ class RenderParagraph(
 
     override fun performLayout() {
         textPainter.layout(
-            minWidth = constraints.minWidth,
-            maxWidth = constraints.maxWidth
+            minWidth = constraints.minWidth, maxWidth = constraints.maxWidth
         )
 
         val textSize = textPainter.size
@@ -110,7 +109,9 @@ class TextPainter(
     }
 
     private fun createParagraph() {
-        val builder = ParagraphBuilder(createParagraphStyle(), FontCollection().apply { setDefaultFontManager(FontMgr.getDefault()) })
+        val builder = ParagraphBuilder(
+            createParagraphStyle(),
+            FontCollection().apply { setDefaultFontManager(FontMgr.getDefault()) })
         text.build(builder)
         paragraph = builder.build()
     }

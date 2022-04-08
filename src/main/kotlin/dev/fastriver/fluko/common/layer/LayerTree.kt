@@ -110,8 +110,7 @@ class TransformLayer(
         val inverseTransform = transform.invert()
         if(inverseTransform != null) {
             context.cullRect = inverseTransform.mapRect(context.cullRect)
-        }
-        else {
+        } else {
             context.cullRect = kGiantRect
         }
 
@@ -151,9 +150,8 @@ class PictureLayer(
 }
 
 class OpacityLayer(
-    var alpha: Int? = null,
-    offset: Offset = Offset.zero
-): OffsetLayer(offset) {
+    var alpha: Int? = null, offset: Offset = Offset.zero
+) : OffsetLayer(offset) {
     override fun preroll(context: PrerollContext, matrix: Matrix33) {
         val childMatrix = matrix.transform(offset)
 
@@ -173,9 +171,7 @@ class OpacityLayer(
         }
         context.canvas.save()
         context.canvas.translate(offset.dx.toFloat(), offset.dy.toFloat())
-        val saveLayerBounds = paintBounds
-            .makeOffset(-offset.dx.toFloat(), -offset.dy.toFloat())
-            .roundOut()
+        val saveLayerBounds = paintBounds.makeOffset(-offset.dx.toFloat(), -offset.dy.toFloat()).roundOut()
         context.canvas.saveLayer(saveLayerBounds, paint)
         super.paint(context)
         context.canvas.restore()

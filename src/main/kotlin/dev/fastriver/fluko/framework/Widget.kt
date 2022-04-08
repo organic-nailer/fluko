@@ -8,8 +8,7 @@ import dev.fastriver.fluko.framework.render.*
 abstract class Widget {
     companion object {
         fun canUpdate(oldWidget: Widget, newWidget: Widget): Boolean {
-            return oldWidget::class == newWidget::class
-                && oldWidget.key == newWidget.key
+            return oldWidget::class == newWidget::class && oldWidget.key == newWidget.key
         }
     }
 
@@ -26,12 +25,12 @@ abstract class RenderObjectWidget : Widget() {
      *
      * [Element.performRebuild]で発火される
      */
-    open fun updateRenderObject(renderObject: RenderObject) { }
+    open fun updateRenderObject(renderObject: RenderObject) {}
 
     /**
      * 関連付けられたRenderObjectが消されたときに呼ばれる
      */
-    open fun didUnmountRenderObject(renderObject: RenderObject) { }
+    open fun didUnmountRenderObject(renderObject: RenderObject) {}
 }
 
 class RenderObjectToWidgetAdapter(
@@ -41,7 +40,10 @@ class RenderObjectToWidgetAdapter(
 
     override fun createRenderObject(): RenderView = container
 
-    fun attachToRenderTree(owner: BuildOwner, element: RenderObjectToWidgetElement? = null): RenderObjectToWidgetElement {
+    fun attachToRenderTree(
+        owner: BuildOwner,
+        element: RenderObjectToWidgetElement? = null
+    ): RenderObjectToWidgetElement {
         val result: RenderObjectToWidgetElement
         if(element == null) {
             result = createElement() as RenderObjectToWidgetElement
@@ -49,8 +51,7 @@ class RenderObjectToWidgetAdapter(
             owner.buildScope {
                 result.mount(null)
             }
-        }
-        else {
+        } else {
             result = element
             result.newWidget = this
             result.markNeedsBuild()
@@ -79,10 +80,8 @@ abstract class LeafRenderObjectWidget : RenderObjectWidget() {
 // 実際のWidget実装
 
 class SizedBox(
-    child: Widget?,
-    val width: Double? = null,
-    val height: Double? = null
-): SingleChildRenderObjectWidget(child) {
+    child: Widget?, val width: Double? = null, val height: Double? = null
+) : SingleChildRenderObjectWidget(child) {
     private val additionalConstraints: BoxConstraints
         get() = BoxConstraints.tightFor(width, height)
 
@@ -99,7 +98,7 @@ class SizedBox(
 class ColoredBox(
     child: Widget?,
     val color: Int,
-): SingleChildRenderObjectWidget(child) {
+) : SingleChildRenderObjectWidget(child) {
     override fun createRenderObject(): RenderObject = RenderColoredBox(color)
 
     override fun updateRenderObject(renderObject: RenderObject) {
@@ -114,13 +113,10 @@ class Listener(
     val onPointerMove: PointerEventListener? = null,
     val onPointerUp: PointerEventListener? = null,
     val onPointerCancel: PointerEventListener? = null,
-): SingleChildRenderObjectWidget(child) {
+) : SingleChildRenderObjectWidget(child) {
     override fun createRenderObject(): RenderObject {
         return RenderPointerListener(
-            onPointerDown,
-            onPointerMove,
-            onPointerUp,
-            onPointerCancel
+            onPointerDown, onPointerMove, onPointerUp, onPointerCancel
         )
     }
 
@@ -140,12 +136,10 @@ class Align(
     val alignment: Alignment = Alignment.center,
     val widthFactor: Double? = null,
     val heightFactor: Double? = null,
-): SingleChildRenderObjectWidget(child) {
+) : SingleChildRenderObjectWidget(child) {
     override fun createRenderObject(): RenderObject {
         return RenderPositionedBox(
-            alignment = alignment,
-            widthFactor = widthFactor,
-            heightFactor = heightFactor
+            alignment = alignment, widthFactor = widthFactor, heightFactor = heightFactor
         )
     }
 }
@@ -157,7 +151,7 @@ class Flex(
     val mainAxisSize: MainAxisSize = MainAxisSize.Max,
     val crossAxisAlignment: CrossAxisAlignment = CrossAxisAlignment.Center,
     val verticalDirection: VerticalDirection = VerticalDirection.Down
-): MultiChildRenderObjectWidget(children) {
+) : MultiChildRenderObjectWidget(children) {
     override fun createRenderObject(): RenderObject {
         return RenderFlex(
             direction, mainAxisAlignment, mainAxisSize, crossAxisAlignment, verticalDirection
@@ -177,7 +171,7 @@ class Flex(
 
 class RichText(
     val text: TextSpan,
-): MultiChildRenderObjectWidget(listOf()) {
+) : MultiChildRenderObjectWidget(listOf()) {
     override fun createRenderObject(): RenderObject {
         return RenderParagraph(
             text
@@ -191,19 +185,19 @@ class RichText(
     }
 }
 
-abstract class StatelessWidget: Widget() {
+abstract class StatelessWidget : Widget() {
     override fun createElement(): Element = StatelessElement(this)
 
     abstract fun build(context: BuildContext): Widget
 }
 
-abstract class StatefulWidget: Widget() {
+abstract class StatefulWidget : Widget() {
     override fun createElement(): Element = StatefulElement(this)
 
     abstract fun createState(): State<*>
 }
 
-abstract class State<T: StatefulWidget> {
+abstract class State<T : StatefulWidget> {
     val widget: T
         get() = widgetInternal!!
     var widgetInternal: T? = null
@@ -227,9 +221,8 @@ abstract class State<T: StatefulWidget> {
 }
 
 class FadeTransition(
-    val opacity: AnimationController,
-    child: Widget? = null
-): SingleChildRenderObjectWidget(child) {
+    val opacity: AnimationController, child: Widget? = null
+) : SingleChildRenderObjectWidget(child) {
     override fun createRenderObject(): RenderObject {
         return RenderAnimatedOpacity(
             opacity = opacity
@@ -245,7 +238,7 @@ class FadeTransition(
 
 abstract class InheritedWidget(
     val child: Widget
-): Widget() {
+) : Widget() {
     override fun createElement(): Element = InheritedElement(this)
 
     abstract fun updateShouldNotify(oldWidget: InheritedWidget): Boolean

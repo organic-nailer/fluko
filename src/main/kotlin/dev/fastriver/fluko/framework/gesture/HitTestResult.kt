@@ -10,7 +10,7 @@ sealed interface TransformPart {
 
 class MatrixTransformPart(
     val matrix: Matrix4
-): TransformPart {
+) : TransformPart {
     override fun multiply(rightHand: Matrix4): Matrix4 {
         return matrix * rightHand
     }
@@ -18,7 +18,7 @@ class MatrixTransformPart(
 
 class OffsetTransformPart(
     val offset: Offset
-): TransformPart {
+) : TransformPart {
     override fun multiply(rightHand: Matrix4): Matrix4 {
         return rightHand.leftTranslate(offset.dx.toFloat(), offset.dy.toFloat())
     }
@@ -63,8 +63,7 @@ class HitTestResult {
     fun popTransform() {
         if(localTransforms.isNotEmpty()) {
             localTransforms.removeLast()
-        }
-        else {
+        } else {
             transforms.removeLast()
             assert(transforms.isNotEmpty())
         }
@@ -99,8 +98,12 @@ class HitTestResult {
     }
 
     private fun addWithRawTransform(transform: Matrix4?, position: Offset, hitTest: HitTestFunc): Boolean {
-        val calculated = transform?.perspectiveTransform(Vector3(listOf(position.dx.toFloat(), position.dy.toFloat(), 0f)))
-        val transformed = if(calculated != null) Offset(calculated.vector[0].toDouble(), calculated.vector[1].toDouble()) else position
+        val calculated =
+            transform?.perspectiveTransform(Vector3(listOf(position.dx.toFloat(), position.dy.toFloat(), 0f)))
+        val transformed = if(calculated != null) Offset(
+            calculated.vector[0].toDouble(),
+            calculated.vector[1].toDouble()
+        ) else position
         transform?.let {
             pushTransform(it)
         }

@@ -6,4 +6,4 @@ interface ParentData
 
 data class BoxParentData(
     var offset: Offset = Offset.zero
-): ParentData
+) : ParentData

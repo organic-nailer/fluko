@@ -11,7 +11,7 @@ class RenderPointerListener(
     var onPointerMove: PointerEventListener?,
     var onPointerUp: PointerEventListener?,
     var onPointerCancel: PointerEventListener?
-): RenderProxyBox() {
+) : RenderProxyBox() {
     override fun handleEvent(event: PointerEvent, entry: HitTestEntry) {
         when(event.phase) {
             PointerEventPhase.Down -> onPointerDown?.invoke(event)

@@ -16,7 +16,7 @@ import kotlin.time.ExperimentalTime
 
 typealias FrameCallback = (Duration) -> Unit
 
-object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
+object WidgetsFlukoBinding : WidgetsBinding, HitTestTarget {
     lateinit var pipeline: RenderPipeline
     lateinit var engine: Engine
     var renderViewElement: Element? = null
@@ -41,11 +41,9 @@ object WidgetsFlukoBinding: WidgetsBinding, HitTestTarget {
         if(initialized) return
         initialized = true
         val configuration = engine.viewConfiguration
-        pipeline = RenderPipeline(
-            onNeedVisualUpdate = {
-                ensureVisualUpdate()
-            }
-        ).apply {
+        pipeline = RenderPipeline(onNeedVisualUpdate = {
+            ensureVisualUpdate()
+        }).apply {
             renderView = RenderView(configuration.width.toDouble(), configuration.height.toDouble())
             renderView!!.prepareInitialFrame()
         }

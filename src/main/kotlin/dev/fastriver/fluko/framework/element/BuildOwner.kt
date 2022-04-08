@@ -30,7 +30,7 @@ class BuildOwner(
         dirtyElementsNeedsResorting = false
         var dirtyCount = dirtyElements.size
         var index = 0
-        while(index <dirtyCount) {
+        while(index < dirtyCount) {
             val element = dirtyElements[index]
             element.rebuild()
             index++

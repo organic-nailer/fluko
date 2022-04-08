@@ -5,7 +5,7 @@ import dev.fastriver.fluko.framework.Widget
 
 class InheritedElement(
     widget: InheritedWidget
-): ComponentElement(widget) {
+) : ComponentElement(widget) {
     private val dependents: MutableSet<Element> = HashSet()
 
     override fun build(): Widget = (widget as InheritedWidget).child
@@ -14,8 +14,7 @@ class InheritedElement(
         val incomingWidgets = parent?.inheritedWidgets
         if(incomingWidgets != null) {
             inheritedWidgets = HashMap(incomingWidgets)
-        }
-        else {
+        } else {
             inheritedWidgets = HashMap()
             inheritedWidgets!![widget::class] = this
         }

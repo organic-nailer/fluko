@@ -8,10 +8,9 @@ import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestResult
 import dev.fastriver.fluko.framework.gesture.HitTestTarget
-import javax.swing.Box
 import kotlin.reflect.KProperty
 
-abstract class RenderObject: HitTestTarget {
+abstract class RenderObject : HitTestTarget {
     companion object {
         private val cleanChildRelayoutBoundary: RenderObjectVisitor = {
             it.cleanRelayoutBounary()
@@ -173,7 +172,7 @@ abstract class RenderObject: HitTestTarget {
         child.cleanRelayoutBounary()
         child.parentData = null
         child.parent = null
-        if (attached) {
+        if(attached) {
             child.detach()
         }
         markNeedsLayout()
@@ -305,13 +304,11 @@ interface ContainerRenderObject<ChildType : RenderObject> {
     fun defaultHitTestChildren(result: HitTestResult, position: Offset): Boolean {
         for(child in children) {
             val childParentData = child.parentData as BoxParentData
-            val isHit = result.addWithPaintOffset(
-                offset = childParentData.offset,
+            val isHit = result.addWithPaintOffset(offset = childParentData.offset,
                 position = position,
                 hitTest = { result, transformed ->
                     (child as RenderBox).hitTest(result, transformed)
-                }
-            )
+                })
             if(isHit) {
                 return true
             }

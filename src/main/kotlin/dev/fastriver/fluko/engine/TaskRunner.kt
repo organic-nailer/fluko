@@ -35,7 +35,7 @@ class TaskRunner(name: String) {
     }
 }
 
-class MessageLoop(name: String): Thread(null,null, name) {
+class MessageLoop(name: String) : Thread(null, null, name) {
     private var running = true;
     private val taskQueue = ArrayDeque<() -> Unit>()
     override fun run() {

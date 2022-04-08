@@ -181,7 +181,7 @@ abstract class Element(
         return ancestor.widget as InheritedWidget
     }
 
-    override fun <T: InheritedWidget> dependOnInheritedWidgetOfExactType(type: KClass<T>): T? {
+    override fun <T : InheritedWidget> dependOnInheritedWidgetOfExactType(type: KClass<T>): T? {
         val ancestor = if(inheritedWidgets == null) null else inheritedWidgets!![type]
         if(ancestor != null) {
             return dependOnInheritedElement(ancestor) as T
@@ -189,7 +189,7 @@ abstract class Element(
         return null
     }
 
-    override fun <T: InheritedWidget> getElementForInheritedWidgetOfExactType(type: KClass<T>): InheritedElement? {
+    override fun <T : InheritedWidget> getElementForInheritedWidgetOfExactType(type: KClass<T>): InheritedElement? {
         return if(inheritedWidgets == null) null else inheritedWidgets!![type]
     }
 

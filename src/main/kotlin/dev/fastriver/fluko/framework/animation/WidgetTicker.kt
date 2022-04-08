@@ -6,8 +6,7 @@ import kotlin.time.Duration
 typealias TickerCallback = (Duration) -> Unit
 
 class WidgetTicker(
-    private val onTick: TickerCallback,
-    private val creator: TickerProvider
+    private val onTick: TickerCallback, private val creator: TickerProvider
 ) {
     private var animationId: Int? = null
     private val scheduled
@@ -17,7 +16,7 @@ class WidgetTicker(
         set(value) {
             if(field == value) return
             field = value
-            if (value) unscheduleTick()
+            if(value) unscheduleTick()
             else if(shouldScheduleTick) scheduleTick()
         }
     private val shouldScheduleTick: Boolean
@@ -81,7 +80,7 @@ interface TickerProvider {
 
 // Flutterではサブツリー全体のTickerのon/off制御のためにTickerModeというのが存在していて、それをlistenする
 // tickerModeNotifierを持つが、簡略化のため省略する
-class TickerProviderImpl: TickerProvider {
+class TickerProviderImpl : TickerProvider {
     private val tickers = mutableSetOf<WidgetTicker>()
 
     override fun createTicker(onTick: TickerCallback): WidgetTicker {

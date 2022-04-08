@@ -3,15 +3,15 @@ package dev.fastriver.fluko.engine
 import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.layer.Layer
 import dev.fastriver.fluko.common.layer.LayerTree
-import dev.fastriver.fluko.framework.*
+import dev.fastriver.fluko.framework.Engine
+import dev.fastriver.fluko.framework.ViewConfiguration
+import dev.fastriver.fluko.framework.WidgetsBinding
+import dev.fastriver.fluko.framework.WidgetsFlukoBinding
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 class Shell(
-    val taskRunners: TaskRunners,
-    var rasterizer: Rasterizer?,
-    val width: Int, val height: Int
-): Engine, GLView.GLViewDelegate {
+    val taskRunners: TaskRunners, var rasterizer: Rasterizer?, val width: Int, val height: Int
+) : Engine, GLView.GLViewDelegate {
     var glView: GLView = GLView(width, height, this)
     private var binding: WidgetsBinding = WidgetsFlukoBinding
     private var vsyncCallback: ((Duration) -> Unit)? = null

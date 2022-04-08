@@ -8,9 +8,7 @@ import dev.fastriver.fluko.framework.geometrics.Alignment
 import dev.fastriver.fluko.framework.gesture.HitTestResult
 
 class RenderPositionedBox(
-    widthFactor: Double? = null,
-    heightFactor: Double? = null,
-    alignment: Alignment = Alignment.center
+    widthFactor: Double? = null, heightFactor: Double? = null, alignment: Alignment = Alignment.center
 ) : RenderBox(), RenderObjectWithChild<RenderBox> {
     var widthFactor: Double? by MarkLayoutProperty(widthFactor)
     var heightFactor: Double? by MarkLayoutProperty(heightFactor)
@@ -79,13 +77,11 @@ class RenderPositionedBox(
     override fun hitTestChildren(result: HitTestResult, position: Offset): Boolean {
         if(child != null) {
             val childParentData = child!!.parentData as BoxParentData
-            return result.addWithPaintOffset(
-                offset = childParentData.offset,
+            return result.addWithPaintOffset(offset = childParentData.offset,
                 position = position,
                 hitTest = { result, transformed ->
                     child!!.hitTest(result, transformed)
-                }
-            )
+                })
         }
         return false
     }

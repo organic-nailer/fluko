@@ -6,9 +6,7 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
 
 class GLView(
-    private val width: Int,
-    private val height: Int,
-    private val delegate: GLViewDelegate
+    width: Int, height: Int, private val delegate: GLViewDelegate
 ) {
     private var windowHandle: Long = -1
     private val pointerController: PointerController

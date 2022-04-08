@@ -2,7 +2,6 @@ package dev.fastriver.fluko.framework.animation
 
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 
 /**
  * 時間を渡したときにどの状態にあるのか、というものを定義するクラス
@@ -14,11 +13,8 @@ interface Simulation {
 }
 
 class InterpolationSimulation(
-    private val begin: Double,
-    private val end: Double,
-    duration: Duration,
-    private val curve: Curve
-): Simulation {
+    private val begin: Double, private val end: Double, duration: Duration, private val curve: Curve
+) : Simulation {
     private val durationInSeconds: Double = duration.toDouble(DurationUnit.SECONDS)
 
     override fun x(timeInSeconds: Double): Double {

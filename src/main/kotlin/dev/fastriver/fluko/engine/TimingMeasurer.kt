@@ -2,7 +2,6 @@ package dev.fastriver.fluko.engine
 
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 class TimingMeasurer {

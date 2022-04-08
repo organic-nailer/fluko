@@ -3,9 +3,7 @@ package dev.fastriver.fluko.engine
 import org.lwjgl.glfw.GLFW
 
 fun runFluko(
-    appMain: () -> Unit,
-    windowWidth: Int = 640,
-    windowHeight: Int = 480
+    appMain: () -> Unit, windowWidth: Int = 640, windowHeight: Int = 480
 ) {
     val taskRunners = TaskRunners(
         platformTaskRunner = TaskRunner("PlatformTaskRunner"),

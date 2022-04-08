@@ -9,6 +9,7 @@ class StatefulElement(widget: StatefulWidget) : ComponentElement(widget) {
         get() = stateInternal!!
     private var stateInternal: State<StatefulWidget>? = null
     private var didChangeDependencies = false
+
     init {
         stateInternal = widget.createState() as State<StatefulWidget>
         state.element = this

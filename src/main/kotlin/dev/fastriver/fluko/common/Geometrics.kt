@@ -98,9 +98,9 @@ fun Rect.roundOut(): Rect {
     )
 }
 
-val kEmptyRect: Rect = Rect.makeWH(0f,0f)
+val kEmptyRect: Rect = Rect.makeWH(0f, 0f)
 
-val kGiantRect: Rect = Rect.makeLTRB(-1e9f,-1e9f,1e9f, 1e9f)
+val kGiantRect: Rect = Rect.makeLTRB(-1e9f, -1e9f, 1e9f, 1e9f)
 
 // Matrix33 Extensions
 
@@ -151,10 +151,30 @@ fun Matrix33.mapRect(rect: Rect): Rect {
     val transformedBottomLeft = transform(bottomLeft)
     val transformedBottomRight = transform(bottomRight)
     return Rect(
-        minOf(transformedTopLeft.dx, transformedTopRight.dx, transformedBottomLeft.dx, transformedBottomRight.dx).toFloat(),
-        minOf(transformedTopLeft.dy, transformedTopRight.dy, transformedBottomLeft.dy, transformedBottomRight.dy).toFloat(),
-        maxOf(transformedTopLeft.dx, transformedTopRight.dx, transformedBottomLeft.dx, transformedBottomRight.dx).toFloat(),
-        maxOf(transformedTopLeft.dy, transformedTopRight.dy, transformedBottomLeft.dy, transformedBottomRight.dy).toFloat(),
+        minOf(
+            transformedTopLeft.dx,
+            transformedTopRight.dx,
+            transformedBottomLeft.dx,
+            transformedBottomRight.dx
+        ).toFloat(),
+        minOf(
+            transformedTopLeft.dy,
+            transformedTopRight.dy,
+            transformedBottomLeft.dy,
+            transformedBottomRight.dy
+        ).toFloat(),
+        maxOf(
+            transformedTopLeft.dx,
+            transformedTopRight.dx,
+            transformedBottomLeft.dx,
+            transformedBottomRight.dx
+        ).toFloat(),
+        maxOf(
+            transformedTopLeft.dy,
+            transformedTopRight.dy,
+            transformedBottomLeft.dy,
+            transformedBottomRight.dy
+        ).toFloat(),
     )
 }
 

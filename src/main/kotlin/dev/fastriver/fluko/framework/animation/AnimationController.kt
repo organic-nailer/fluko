@@ -15,7 +15,7 @@ interface AnimationListener {
     fun notifyListeners()
 }
 
-class AnimationListenerImpl: AnimationListener {
+class AnimationListenerImpl : AnimationListener {
     private val listeners = mutableListOf<() -> Unit>()
 
     override fun addListener(listener: () -> Unit) {
@@ -43,7 +43,7 @@ class AnimationController(
     private val lowerBound: Double = 0.0,
     private val upperBound: Double = 1.0,
     vsync: TickerProvider
-): AnimationListener by AnimationListenerImpl() {
+) : AnimationListener by AnimationListenerImpl() {
     private fun tick(elapsed: Duration) {
         lastElapsedDuration = elapsed
         val elapsedInSeconds = elapsed.toDouble(DurationUnit.SECONDS)

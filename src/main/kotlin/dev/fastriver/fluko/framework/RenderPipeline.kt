@@ -42,8 +42,8 @@ class RenderPipeline(
     }
 
     fun flushPaint() {
-       val dirtyNodes = nodesNeedingPaint.sortedBy { it.depth }
-       nodesNeedingPaint.clear()
+        val dirtyNodes = nodesNeedingPaint.sortedBy { it.depth }
+        nodesNeedingPaint.clear()
         for(node in dirtyNodes) {
             if(node.needsPaint && node.owner == this) {
                 // TODO: consider if node detached
@@ -67,8 +67,7 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
             if(childLayer == null) {
                 childLayer = OffsetLayer()
                 child.layer = childLayer
-            }
-            else {
+            } else {
                 childLayer.removeAllChildren()
             }
             val childContext = PaintingContext(childLayer, child.size.and(Offset.zero))
@@ -120,8 +119,7 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         if(child.isRepaintBoundary) {
             stopRecordingIfNeeded()
             compositeChild(child, offset)
-        }
-        else {
+        } else {
             child.needsPaint = false
             child.paint(this, offset)
         }
@@ -163,7 +161,12 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         childContext.stopRecordingIfNeeded()
     }
 
-    fun pushOpacity(offset: Offset, alpha: Int, painter: PaintingContextCallback, oldLayer: OpacityLayer? = null): OpacityLayer {
+    fun pushOpacity(
+        offset: Offset,
+        alpha: Int,
+        painter: PaintingContextCallback,
+        oldLayer: OpacityLayer? = null
+    ): OpacityLayer {
         val layer = oldLayer ?: OpacityLayer()
         layer.let {
             it.alpha = alpha

@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 
 class RenderAnimatedOpacity(
     opacity: AnimationController
-): RenderProxyBox() {
+) : RenderProxyBox() {
     private var alpha: Int? = null
 
     var opacity: AnimationController = opacity

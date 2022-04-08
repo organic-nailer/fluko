@@ -5,8 +5,7 @@ import dev.fastriver.fluko.common.PointerEventPhase
 import org.lwjgl.glfw.GLFW
 
 class PointerController(
-    private val windowHandle: Long,
-    private val onEventCallback: (PointerEvent) -> Unit
+    private val windowHandle: Long, private val onEventCallback: (PointerEvent) -> Unit
 ) {
     private var pointerCurrentlyAdded = false
     private var pointerCurrentlyDown = false
@@ -18,7 +17,7 @@ class PointerController(
             onCursorEnter(enter)
         }
         GLFW.glfwSetCursorPosCallback(windowHandle) { _, x, y ->
-            onCursorPosition(x,y)
+            onCursorPosition(x, y)
         }
         GLFW.glfwSetMouseButtonCallback(windowHandle) { _, key, action, _ ->
             onMouseButton(key, action)
@@ -26,7 +25,7 @@ class PointerController(
     }
 
     private fun onCursorEnter(entered: Boolean) {
-        val (x,y) = getCurrentCursorPosition() ?: return
+        val (x, y) = getCurrentCursorPosition() ?: return
         val phase = if(entered) PointerEventPhase.Add else PointerEventPhase.Remove
         sendPointerEvent(phase, x, y)
     }
@@ -52,7 +51,7 @@ class PointerController(
             if(pointerCurrentlyDown) PointerEventPhase.Up else PointerEventPhase.Hover
         }
         if(phase == PointerEventPhase.Hover) return
-        val (x,y) = getCurrentCursorPosition() ?: return
+        val (x, y) = getCurrentCursorPosition() ?: return
         sendPointerEvent(phase, x, y)
 
         // TODO: hoverの有無で切り替えている部分の必要性
