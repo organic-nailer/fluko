@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.common.layer
 
 import dev.fastriver.fluko.common.*
-import org.jetbrains.skija.*
+import org.jetbrains.skia.*
 
 class LayerTree {
     var rootLayer: Layer? = null

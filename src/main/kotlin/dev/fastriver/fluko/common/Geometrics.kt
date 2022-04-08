@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.common
 
-import org.jetbrains.skija.Matrix33
-import org.jetbrains.skija.Rect
+import org.jetbrains.skia.Matrix33
+import org.jetbrains.skia.Rect
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min

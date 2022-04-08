@@ -4,7 +4,7 @@ import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.gesture.HitTestEntry
 import dev.fastriver.fluko.framework.gesture.HitTestResult
-import org.jetbrains.skija.Paint
+import org.jetbrains.skia.Paint
 
 class RenderColoredBox(
     color: Int

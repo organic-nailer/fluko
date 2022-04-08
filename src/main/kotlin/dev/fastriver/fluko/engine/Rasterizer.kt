@@ -2,7 +2,7 @@ package dev.fastriver.fluko.engine
 
 import dev.fastriver.fluko.common.layer.LayerTree
 import dev.fastriver.fluko.common.layer.PaintContext
-import org.jetbrains.skija.*
+import org.jetbrains.skia.*
 import org.lwjgl.opengl.GL11
 
 class Rasterizer(width: Int, height: Int, val context: DirectContext) {
@@ -15,8 +15,8 @@ class Rasterizer(width: Int, height: Int, val context: DirectContext) {
         )
 
         surface = Surface.makeFromBackendRenderTarget(
-            context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getSRGB()
-        )
+            context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.sRGB
+        )!!
     }
 
     fun drawToSurface(layerTree: LayerTree) {

@@ -6,12 +6,12 @@ import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestResult
-import org.jetbrains.skija.Canvas
-import org.jetbrains.skija.FontMgr
-import org.jetbrains.skija.paragraph.FontCollection
-import org.jetbrains.skija.paragraph.Paragraph
-import org.jetbrains.skija.paragraph.ParagraphBuilder
-import org.jetbrains.skija.paragraph.ParagraphStyle
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.FontMgr
+import org.jetbrains.skia.paragraph.FontCollection
+import org.jetbrains.skia.paragraph.Paragraph
+import org.jetbrains.skia.paragraph.ParagraphBuilder
+import org.jetbrains.skia.paragraph.ParagraphStyle
 import kotlin.math.ceil
 
 class RenderParagraph(
@@ -111,7 +111,7 @@ class TextPainter(
     private fun createParagraph() {
         val builder = ParagraphBuilder(
             createParagraphStyle(),
-            FontCollection().apply { setDefaultFontManager(FontMgr.getDefault()) })
+            FontCollection().apply { setDefaultFontManager(FontMgr.default) })
         text.build(builder)
         paragraph = builder.build()
     }

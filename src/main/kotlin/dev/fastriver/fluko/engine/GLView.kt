@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.engine
 
 import dev.fastriver.fluko.common.PointerEvent
-import org.jetbrains.skija.DirectContext
+import org.jetbrains.skia.DirectContext
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
 
@@ -15,7 +15,7 @@ class GLView(
         GLFW.glfwInit()
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE)
-        windowHandle = GLFW.glfwCreateWindow(width, height, "Skija Sample", 0, 0)
+        windowHandle = GLFW.glfwCreateWindow(width, height, "Fluko", 0, 0)
         GLFW.glfwSwapInterval(60)
         GLFW.glfwShowWindow(windowHandle)
         pointerController = PointerController(windowHandle) {

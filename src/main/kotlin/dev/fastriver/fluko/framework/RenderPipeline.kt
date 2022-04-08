@@ -4,9 +4,9 @@ import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.layer.*
 import dev.fastriver.fluko.framework.render.RenderObject
 import dev.fastriver.fluko.framework.render.RenderView
-import org.jetbrains.skija.Canvas
-import org.jetbrains.skija.PictureRecorder
-import org.jetbrains.skija.Rect
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.PictureRecorder
+import org.jetbrains.skia.Rect
 
 class RenderPipeline(
     private val onNeedVisualUpdate: () -> Unit
