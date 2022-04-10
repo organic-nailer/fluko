@@ -5,8 +5,9 @@ import dev.fastriver.fluko.framework.RenderObjectWidget
 import dev.fastriver.fluko.framework.Widget
 import dev.fastriver.fluko.framework.render.RenderObject
 import dev.fastriver.fluko.framework.render.RenderObjectWithChild
+import dev.fastriver.fluko.framework.render.RenderView
 
-class RenderObjectToWidgetElement(widget: RenderObjectWidget) : RenderObjectElement(widget) {
+class RenderObjectToWidgetElement<T: RenderObject>(widget: RenderObjectWidget<T>) : RenderObjectElement<T>(widget) {
     private var child: Element? = null
     var newWidget: Widget? = null
 

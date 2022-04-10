@@ -62,7 +62,7 @@ object WidgetsFlukoBinding : WidgetsBinding, HitTestTarget {
         val isBootstrapFrame = renderViewElement == null
         renderViewElement = RenderObjectToWidgetAdapter(
             rootWidget, pipeline.renderView!!
-        ).attachToRenderTree(buildOwner, renderViewElement as RenderObjectToWidgetElement?)
+        ).attachToRenderTree(buildOwner, renderViewElement as RenderObjectToWidgetElement<*>?)
         if(isBootstrapFrame) {
             ensureVisualUpdate()
         }

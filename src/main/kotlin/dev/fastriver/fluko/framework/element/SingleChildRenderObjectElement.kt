@@ -5,9 +5,9 @@ import dev.fastriver.fluko.framework.Widget
 import dev.fastriver.fluko.framework.render.RenderObject
 import dev.fastriver.fluko.framework.render.RenderObjectWithChild
 
-class SingleChildRenderObjectElement(widget: SingleChildRenderObjectWidget) : RenderObjectElement(widget) {
-    val widgetCasted: SingleChildRenderObjectWidget
-        get() = widget as SingleChildRenderObjectWidget
+class SingleChildRenderObjectElement<T: RenderObject>(widget: SingleChildRenderObjectWidget<T>) : RenderObjectElement<T>(widget) {
+    val widgetCasted: SingleChildRenderObjectWidget<T>
+        get() = widget as SingleChildRenderObjectWidget<T>
     private var child: Element? = null
 
     override fun visitChildren(visitor: ElementVisitor) {

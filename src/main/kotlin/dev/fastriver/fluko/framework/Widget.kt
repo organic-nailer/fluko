@@ -42,11 +42,11 @@ class RenderObjectToWidgetAdapter(
 
     fun attachToRenderTree(
         owner: BuildOwner,
-        element: RenderObjectToWidgetElement? = null
-    ): RenderObjectToWidgetElement {
-        val result: RenderObjectToWidgetElement
+        element: RenderObjectToWidgetElement<*>? = null
+    ): RenderObjectToWidgetElement<*> {
+        val result: RenderObjectToWidgetElement<*>
         if(element == null) {
-            result = createElement() as RenderObjectToWidgetElement
+            result = createElement() as RenderObjectToWidgetElement<*>
             result.owner = owner
             owner.buildScope {
                 result.mount(null)

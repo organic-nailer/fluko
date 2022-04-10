@@ -5,9 +5,9 @@ import dev.fastriver.fluko.framework.Widget
 import dev.fastriver.fluko.framework.render.ContainerRenderObject
 import dev.fastriver.fluko.framework.render.RenderObject
 
-class MultiChildRenderObjectElement(widget: MultiChildRenderObjectWidget) : RenderObjectElement(widget) {
-    val widgetCasted: MultiChildRenderObjectWidget
-        get() = widget as MultiChildRenderObjectWidget
+class MultiChildRenderObjectElement<T: RenderObject>(widget: MultiChildRenderObjectWidget<T>) : RenderObjectElement<T>(widget) {
+    val widgetCasted: MultiChildRenderObjectWidget<*>
+        get() = widget as MultiChildRenderObjectWidget<*>
     private var children: List<Element> = listOf()
 
     override fun visitChildren(visitor: ElementVisitor) {

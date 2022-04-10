@@ -4,21 +4,21 @@ import dev.fastriver.fluko.framework.RenderObjectWidget
 import dev.fastriver.fluko.framework.Widget
 import dev.fastriver.fluko.framework.render.RenderObject
 
-abstract class RenderObjectElement(
-    widget: RenderObjectWidget
+abstract class RenderObjectElement<T: RenderObject>(
+    widget: RenderObjectWidget<T>
 ) : Element(widget) {
-    private val widgetCasted: RenderObjectWidget
-        get() = widget as RenderObjectWidget
+    private val widgetCasted: RenderObjectWidget<T>
+        get() = widget as RenderObjectWidget<T>
 
     override val renderObject: RenderObject?
         get() = renderObjectInternal
     private var renderObjectInternal: RenderObject? = null
 
-    private var ancestorRenderObjectElement: RenderObjectElement? = null
+    private var ancestorRenderObjectElement: RenderObjectElement<*>? = null
 
     override fun mount(parent: Element?) {
         super.mount(parent)
-        renderObjectInternal = (widget as RenderObjectWidget).createRenderObject()
+        renderObjectInternal = (widget as RenderObjectWidget<*>).createRenderObject()
         attachRenderObject()
         dirty = false
     }
@@ -29,7 +29,7 @@ abstract class RenderObjectElement(
     }
 
     override fun performRebuild() {
-        widgetCasted.updateRenderObject(renderObject!!)
+        widgetCasted.updateRenderObject(renderObject as T)
         dirty = false
     }
 
@@ -52,7 +52,7 @@ abstract class RenderObjectElement(
         while((oldChildrenTop <= oldChildrenBottom) && (newChildrenTop <= newChildrenBottom)) {
             val oldChild = replaceWithNullIfForgotten(oldChildren[oldChildrenTop])
             val newWidget = newWidgets[newChildrenTop]
-            if(oldChild == null || !Widget.canUpdate(oldChild.widget!!, newWidget)) {
+            if(oldChild == null || !Widget.canUpdate(oldChild.widget, newWidget)) {
                 break
             }
             val newChild = updateChild(oldChild, newWidget)
@@ -64,7 +64,7 @@ abstract class RenderObjectElement(
         while((oldChildrenTop <= oldChildrenBottom) && (newChildrenTop <= newChildrenBottom)) {
             val oldChild = replaceWithNullIfForgotten(oldChildren[oldChildrenBottom])
             val newWidget = newWidgets[newChildrenBottom]
-            if(oldChild == null || !Widget.canUpdate(oldChild.widget!!, newWidget)) {
+            if(oldChild == null || !Widget.canUpdate(oldChild.widget, newWidget)) {
                 break
             }
             newChildrenTop--
@@ -128,12 +128,12 @@ abstract class RenderObjectElement(
     /**
      * Elementツリーで一番直近のRenderObjectElementを探す
      */
-    fun findAncestorRenderObjectElement(): RenderObjectElement? {
+    fun findAncestorRenderObjectElement(): RenderObjectElement<*>? {
         var ancestor = parent
-        while(ancestor != null && ancestor !is RenderObjectElement) {
+        while(ancestor != null && ancestor !is RenderObjectElement<*>) {
             ancestor = ancestor.parent
         }
-        return ancestor as RenderObjectElement?
+        return ancestor as RenderObjectElement<*>?
     }
 
     /**
