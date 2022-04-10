@@ -17,25 +17,25 @@ abstract class Widget {
     abstract fun createElement(): Element
 }
 
-abstract class RenderObjectWidget : Widget() {
-    abstract fun createRenderObject(): RenderObject
+abstract class RenderObjectWidget<RenderObjectType: RenderObject> : Widget() {
+    abstract fun createRenderObject(): RenderObjectType
 
     /**
      * RenderObjectの情報を更新する
      *
      * [Element.performRebuild]で発火される
      */
-    open fun updateRenderObject(renderObject: RenderObject) {}
+    open fun updateRenderObject(renderObject: RenderObjectType) {}
 
     /**
      * 関連付けられたRenderObjectが消されたときに呼ばれる
      */
-    open fun didUnmountRenderObject(renderObject: RenderObject) {}
+    open fun didUnmountRenderObject(renderObject: RenderObjectType) {}
 }
 
 class RenderObjectToWidgetAdapter(
     val child: Widget?, val container: RenderView
-) : RenderObjectWidget() {
+) : RenderObjectWidget<RenderView>() {
     override fun createElement(): Element = RenderObjectToWidgetElement(this)
 
     override fun createRenderObject(): RenderView = container
@@ -60,19 +60,19 @@ class RenderObjectToWidgetAdapter(
     }
 }
 
-abstract class SingleChildRenderObjectWidget(
+abstract class SingleChildRenderObjectWidget<RenderObjectType: RenderObject>(
     val child: Widget?
-) : RenderObjectWidget() {
+) : RenderObjectWidget<RenderObjectType>() {
     override fun createElement(): Element = SingleChildRenderObjectElement(this)
 }
 
-abstract class MultiChildRenderObjectWidget(
+abstract class MultiChildRenderObjectWidget<RenderObjectType: RenderObject>(
     val children: List<Widget>
-) : RenderObjectWidget() {
+) : RenderObjectWidget<RenderObjectType>() {
     override fun createElement(): Element = MultiChildRenderObjectElement(this)
 }
 
-abstract class LeafRenderObjectWidget : RenderObjectWidget() {
+abstract class LeafRenderObjectWidget<RenderObjectType: RenderObject> : RenderObjectWidget<RenderObjectType>() {
     override fun createElement(): Element = LeafRenderObjectElement(this)
 }
 
@@ -81,16 +81,15 @@ abstract class LeafRenderObjectWidget : RenderObjectWidget() {
 
 class SizedBox(
     child: Widget?, val width: Double? = null, val height: Double? = null
-) : SingleChildRenderObjectWidget(child) {
+) : SingleChildRenderObjectWidget<RenderConstrainedBox>(child) {
     private val additionalConstraints: BoxConstraints
         get() = BoxConstraints.tightFor(width, height)
 
-    override fun createRenderObject(): RenderObject = RenderConstrainedBox(
+    override fun createRenderObject() = RenderConstrainedBox(
         additionalConstraints = BoxConstraints.tightFor(width, height)
     )
 
-    override fun updateRenderObject(renderObject: RenderObject) {
-        renderObject as RenderConstrainedBox
+    override fun updateRenderObject(renderObject: RenderConstrainedBox) {
         renderObject.additionalConstraints = additionalConstraints
     }
 }
@@ -98,11 +97,10 @@ class SizedBox(
 class ColoredBox(
     child: Widget?,
     val color: Int,
-) : SingleChildRenderObjectWidget(child) {
-    override fun createRenderObject(): RenderObject = RenderColoredBox(color)
+) : SingleChildRenderObjectWidget<RenderColoredBox>(child) {
+    override fun createRenderObject() = RenderColoredBox(color)
 
-    override fun updateRenderObject(renderObject: RenderObject) {
-        renderObject as RenderColoredBox
+    override fun updateRenderObject(renderObject: RenderColoredBox) {
         renderObject.color = color
     }
 }
@@ -113,15 +111,14 @@ class Listener(
     val onPointerMove: PointerEventListener? = null,
     val onPointerUp: PointerEventListener? = null,
     val onPointerCancel: PointerEventListener? = null,
-) : SingleChildRenderObjectWidget(child) {
-    override fun createRenderObject(): RenderObject {
+) : SingleChildRenderObjectWidget<RenderPointerListener>(child) {
+    override fun createRenderObject(): RenderPointerListener {
         return RenderPointerListener(
             onPointerDown, onPointerMove, onPointerUp, onPointerCancel
         )
     }
 
-    override fun updateRenderObject(renderObject: RenderObject) {
-        renderObject as RenderPointerListener
+    override fun updateRenderObject(renderObject: RenderPointerListener) {
         renderObject.let {
             it.onPointerDown = onPointerDown
             it.onPointerMove = onPointerMove
@@ -136,8 +133,8 @@ class Align(
     val alignment: Alignment = Alignment.center,
     val widthFactor: Double? = null,
     val heightFactor: Double? = null,
-) : SingleChildRenderObjectWidget(child) {
-    override fun createRenderObject(): RenderObject {
+) : SingleChildRenderObjectWidget<RenderPositionedBox>(child) {
+    override fun createRenderObject(): RenderPositionedBox {
         return RenderPositionedBox(
             alignment = alignment, widthFactor = widthFactor, heightFactor = heightFactor
         )
@@ -151,15 +148,15 @@ class Flex(
     val mainAxisSize: MainAxisSize = MainAxisSize.Max,
     val crossAxisAlignment: CrossAxisAlignment = CrossAxisAlignment.Center,
     val verticalDirection: VerticalDirection = VerticalDirection.Down
-) : MultiChildRenderObjectWidget(children) {
-    override fun createRenderObject(): RenderObject {
+) : MultiChildRenderObjectWidget<RenderFlex>(children) {
+    override fun createRenderObject(): RenderFlex {
         return RenderFlex(
             direction, mainAxisAlignment, mainAxisSize, crossAxisAlignment, verticalDirection
         )
     }
 
-    override fun updateRenderObject(renderObject: RenderObject) {
-        (renderObject as RenderFlex).let {
+    override fun updateRenderObject(renderObject: RenderFlex) {
+        renderObject.let {
             it.direction = direction
             it.mainAxisAlignment = mainAxisAlignment
             it.mainAxisSize = mainAxisSize
@@ -171,15 +168,15 @@ class Flex(
 
 class RichText(
     val text: TextSpan,
-) : MultiChildRenderObjectWidget(listOf()) {
-    override fun createRenderObject(): RenderObject {
+) : MultiChildRenderObjectWidget<RenderParagraph>(listOf()) {
+    override fun createRenderObject(): RenderParagraph {
         return RenderParagraph(
             text
         )
     }
 
-    override fun updateRenderObject(renderObject: RenderObject) {
-        (renderObject as RenderParagraph).let {
+    override fun updateRenderObject(renderObject: RenderParagraph) {
+        renderObject.let {
             it.text = text
         }
     }
@@ -222,15 +219,15 @@ abstract class State<T : StatefulWidget> {
 
 class FadeTransition(
     val opacity: AnimationController, child: Widget? = null
-) : SingleChildRenderObjectWidget(child) {
-    override fun createRenderObject(): RenderObject {
+) : SingleChildRenderObjectWidget<RenderAnimatedOpacity>(child) {
+    override fun createRenderObject(): RenderAnimatedOpacity {
         return RenderAnimatedOpacity(
             opacity = opacity
         )
     }
 
-    override fun updateRenderObject(renderObject: RenderObject) {
-        (renderObject as RenderAnimatedOpacity).let {
+    override fun updateRenderObject(renderObject: RenderAnimatedOpacity) {
+        renderObject.let {
             it.opacity = opacity
         }
     }
