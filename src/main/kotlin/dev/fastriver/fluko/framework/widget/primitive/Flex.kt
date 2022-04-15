@@ -3,7 +3,7 @@ package dev.fastriver.fluko.framework.widget.primitive
 import dev.fastriver.fluko.framework.geometrics.*
 import dev.fastriver.fluko.framework.render.RenderFlex
 
-class Flex(
+open class Flex(
     children: List<Widget> = listOf(),
     val direction: Axis,
     val mainAxisAlignment: MainAxisAlignment = MainAxisAlignment.Start,
