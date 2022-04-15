@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.framework.element
 
-import dev.fastriver.fluko.framework.StatelessWidget
-import dev.fastriver.fluko.framework.Widget
+import dev.fastriver.fluko.framework.widget.primitive.StatelessWidget
+import dev.fastriver.fluko.framework.widget.primitive.Widget
 
 class StatelessElement(widget: StatelessWidget) : ComponentElement(widget) {
     override fun build(): Widget = (widget as StatelessWidget).build(this)

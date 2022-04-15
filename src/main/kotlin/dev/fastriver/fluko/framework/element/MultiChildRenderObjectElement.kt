@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.framework.element
 
-import dev.fastriver.fluko.framework.MultiChildRenderObjectWidget
-import dev.fastriver.fluko.framework.Widget
+import dev.fastriver.fluko.framework.widget.primitive.MultiChildRenderObjectWidget
+import dev.fastriver.fluko.framework.widget.primitive.Widget
 import dev.fastriver.fluko.framework.render.ContainerRenderObject
 import dev.fastriver.fluko.framework.render.RenderObject
 

@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.framework.element
 
-import dev.fastriver.fluko.framework.InheritedWidget
-import dev.fastriver.fluko.framework.Widget
+import dev.fastriver.fluko.framework.widget.primitive.InheritedWidget
+import dev.fastriver.fluko.framework.widget.primitive.Widget
 import kotlin.reflect.KClass
 
 interface BuildContext {

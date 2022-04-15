@@ -1,6 +1,6 @@
 package dev.fastriver.fluko.framework.element
 
-import dev.fastriver.fluko.framework.Widget
+import dev.fastriver.fluko.framework.widget.primitive.Widget
 
 abstract class ComponentElement(widget: Widget) : Element(widget) {
     private var child: Element? = null

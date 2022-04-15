@@ -1,8 +1,8 @@
 package dev.fastriver.fluko.framework.element
 
-import dev.fastriver.fluko.framework.State
-import dev.fastriver.fluko.framework.StatefulWidget
-import dev.fastriver.fluko.framework.Widget
+import dev.fastriver.fluko.framework.widget.primitive.State
+import dev.fastriver.fluko.framework.widget.primitive.StatefulWidget
+import dev.fastriver.fluko.framework.widget.primitive.Widget
 
 class StatefulElement(widget: StatefulWidget) : ComponentElement(widget) {
     val state: State<StatefulWidget>

@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.framework.element
 
-import dev.fastriver.fluko.framework.RenderObjectWidget
-import dev.fastriver.fluko.framework.Widget
+import dev.fastriver.fluko.framework.widget.primitive.RenderObjectWidget
+import dev.fastriver.fluko.framework.widget.primitive.Widget
 import dev.fastriver.fluko.framework.render.RenderObject
 
 abstract class RenderObjectElement<T: RenderObject>(
