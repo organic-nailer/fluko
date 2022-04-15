@@ -3,7 +3,7 @@ package dev.fastriver.fluko.framework.widget.primitive
 import dev.fastriver.fluko.framework.geometrics.Alignment
 import dev.fastriver.fluko.framework.render.RenderPositionedBox
 
-class Align(
+open class Align(
     child: Widget?,
     val alignment: Alignment = Alignment.center,
     val widthFactor: Double? = null,
