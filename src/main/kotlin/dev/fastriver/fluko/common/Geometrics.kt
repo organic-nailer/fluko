@@ -1,6 +1,7 @@
 package dev.fastriver.fluko.common
 
 import org.jetbrains.skia.Matrix33
+import org.jetbrains.skia.RRect
 import org.jetbrains.skia.Rect
 import kotlin.math.abs
 import kotlin.math.max
@@ -88,8 +89,12 @@ fun Rect.join(other: Rect): Rect {
  */
 fun Rect.makeOffset(dx: Float, dy: Float): Rect {
     return Rect(
-        this.left + dx, this.top + dy, this.right - dx, this.bottom - dy
+        this.left + dx, this.top + dy, this.right + dx, this.bottom + dy
     )
+}
+
+fun Rect.makeOffset(offset: Offset): Rect {
+    return this.makeOffset(offset.dx.toFloat(), offset.dy.toFloat())
 }
 
 fun Rect.roundOut(): Rect {
@@ -98,9 +103,26 @@ fun Rect.roundOut(): Rect {
     )
 }
 
+fun Rect.contains(dx: Float, dy: Float): Boolean {
+    return dx >= left && dx < right && dy >= top && dy < bottom
+}
+
+val Rect.center: Offset get() =  Offset(this.left + this.width / 2.0, this.top + this.height / 2.0)
+
 val kEmptyRect: Rect = Rect.makeWH(0f, 0f)
 
 val kGiantRect: Rect = Rect.makeLTRB(-1e9f, -1e9f, 1e9f, 1e9f)
+
+// RRect Extensions
+fun RRect.makeOffset(dx: Float, dy: Float): RRect {
+    return RRect.makeComplexLTRB(
+        this.left + dx, this.top + dy, this.right + dx, this.bottom + dy, this.radii
+    )
+}
+
+fun RRect.makeOffset(offset: Offset): RRect {
+    return this.makeOffset(offset.dx.toFloat(), offset.dy.toFloat())
+}
 
 // Matrix33 Extensions
 
@@ -152,28 +174,16 @@ fun Matrix33.mapRect(rect: Rect): Rect {
     val transformedBottomRight = transform(bottomRight)
     return Rect(
         minOf(
-            transformedTopLeft.dx,
-            transformedTopRight.dx,
-            transformedBottomLeft.dx,
-            transformedBottomRight.dx
+            transformedTopLeft.dx, transformedTopRight.dx, transformedBottomLeft.dx, transformedBottomRight.dx
         ).toFloat(),
         minOf(
-            transformedTopLeft.dy,
-            transformedTopRight.dy,
-            transformedBottomLeft.dy,
-            transformedBottomRight.dy
+            transformedTopLeft.dy, transformedTopRight.dy, transformedBottomLeft.dy, transformedBottomRight.dy
         ).toFloat(),
         maxOf(
-            transformedTopLeft.dx,
-            transformedTopRight.dx,
-            transformedBottomLeft.dx,
-            transformedBottomRight.dx
+            transformedTopLeft.dx, transformedTopRight.dx, transformedBottomLeft.dx, transformedBottomRight.dx
         ).toFloat(),
         maxOf(
-            transformedTopLeft.dy,
-            transformedTopRight.dy,
-            transformedBottomLeft.dy,
-            transformedBottomRight.dy
+            transformedTopLeft.dy, transformedTopRight.dy, transformedBottomLeft.dy, transformedBottomRight.dy
         ).toFloat(),
     )
 }

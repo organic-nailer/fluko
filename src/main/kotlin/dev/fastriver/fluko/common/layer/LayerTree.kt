@@ -97,7 +97,15 @@ open class ContainerLayer : Layer() {
 
 open class OffsetLayer(
     open var offset: Offset = Offset.zero
-) : ContainerLayer() {}
+) : ContainerLayer() {
+    override fun clone(): Layer {
+        val cloned = OffsetLayer(offset)
+        for(child in children) {
+            cloned.append(child.clone())
+        }
+        return cloned
+    }
+}
 
 class TransformLayer(
     val transform: Matrix33 = Matrix33.IDENTITY, offset: Offset
@@ -185,6 +193,116 @@ class OpacityLayer(
         }
         return cloned
     }
+}
+
+class ClipPathLayer(
+    var clipPath: Path, var clipBehavior: Clip = Clip.AntiAlias
+) : ContainerLayer() {
+    override fun preroll(context: PrerollContext, matrix: Matrix33) {
+        val previousCullRect = context.cullRect
+        val clipPathBounds = clipPath.bounds
+        if(context.cullRect.intersect(clipPathBounds) == null) {
+            context.cullRect = Rect.makeWH(0f, 0f)
+        }
+        val childPaintBounds = prerollChildren(context, matrix)
+        if(childPaintBounds.intersect(clipPathBounds) != null) {
+            paintBounds = childPaintBounds
+        }
+
+        context.cullRect = previousCullRect
+    }
+
+    override fun paint(context: PaintContext) {
+        context.canvas.save()
+        context.canvas.clipPath(clipPath, clipBehavior != Clip.HardEdge)
+
+        super.paint(context)
+        context.canvas.restore()
+    }
+
+    override fun clone(): Layer {
+        val cloned = ClipPathLayer(clipPath, clipBehavior)
+        for(child in children) {
+            cloned.append(child.clone())
+        }
+        return cloned
+    }
+}
+
+class ClipRectLayer(
+    var clipRect: Rect, var clipBehavior: Clip = Clip.AntiAlias
+) : ContainerLayer() {
+    override fun preroll(context: PrerollContext, matrix: Matrix33) {
+        val previousCullRect = context.cullRect
+        if(context.cullRect.intersect(clipRect) == null) {
+            context.cullRect = Rect.makeWH(0f, 0f)
+        }
+        val childPaintBounds = prerollChildren(context, matrix)
+        if(childPaintBounds.intersect(clipRect) != null) {
+            paintBounds = childPaintBounds
+        }
+
+        context.cullRect = previousCullRect
+    }
+
+    override fun paint(context: PaintContext) {
+        context.canvas.save()
+        context.canvas.clipRect(clipRect, clipBehavior != Clip.HardEdge)
+
+        super.paint(context)
+        context.canvas.restore()
+    }
+
+    override fun clone(): Layer {
+        val cloned = ClipRectLayer(clipRect, clipBehavior)
+        for(child in children) {
+            cloned.append(child.clone())
+        }
+        return cloned
+    }
+}
+
+class ClipRRectLayer(
+    var clipRRect: RRect, var clipBehavior: Clip = Clip.AntiAlias
+) : ContainerLayer() {
+    override fun preroll(context: PrerollContext, matrix: Matrix33) {
+        val previousCullRect = context.cullRect
+        if(context.cullRect.intersect(clipRRect) == null) {
+            context.cullRect = Rect.makeWH(0f, 0f)
+        }
+        val childPaintBounds = prerollChildren(context, matrix)
+        if(childPaintBounds.intersect(clipRRect) != null) {
+            paintBounds = childPaintBounds
+        }
+
+        context.cullRect = previousCullRect
+    }
+
+    override fun paint(context: PaintContext) {
+        context.canvas.save()
+        context.canvas.clipRRect(clipRRect, clipBehavior != Clip.HardEdge)
+
+        super.paint(context)
+        context.canvas.restore()
+    }
+
+    override fun clone(): Layer {
+        val cloned = ClipRRectLayer(clipRRect, clipBehavior)
+        for(child in children) {
+            cloned.append(child.clone())
+        }
+        return cloned
+    }
+}
+//class ColorFilterLayer
+//class BackdropFilterLayer
+//class ImageFilterLayer
+//class PhysicalShapeLayer
+//class ShaderMaskLayer
+//class TextureLayer
+
+enum class Clip {
+    None, HardEdge, AntiAlias, AntiAliasWithSaveLayer
 }
 
 data class PaintContext(
