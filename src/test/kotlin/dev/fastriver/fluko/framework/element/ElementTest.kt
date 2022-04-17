@@ -1,9 +1,9 @@
 package dev.fastriver.fluko.framework.element
 
-import dev.fastriver.fluko.framework.RenderObjectToWidgetAdapter
-import dev.fastriver.fluko.framework.SizedBox
 import dev.fastriver.fluko.framework.render.RenderConstrainedBox
 import dev.fastriver.fluko.framework.render.RenderView
+import dev.fastriver.fluko.framework.widget.primitive.RenderObjectToWidgetAdapter
+import dev.fastriver.fluko.framework.widget.primitive.SizedBox
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -22,7 +22,7 @@ internal class ElementTest {
         assert(rootWidget.child is SizedBox)
         var leafElement: Element? = null
         rootElement.visitChildren {
-            assert(it is SingleChildRenderObjectElement)
+            assert(it is SingleChildRenderObjectElement<*>)
             leafElement = it
         }
         (leafElement!!.renderObject as RenderConstrainedBox).let {

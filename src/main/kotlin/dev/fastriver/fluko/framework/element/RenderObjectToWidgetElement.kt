@@ -11,7 +11,7 @@ class RenderObjectToWidgetElement<T: RenderObject>(widget: RenderObjectWidget<T>
     private var child: Element? = null
     var newWidget: Widget? = null
 
-    override fun visitChildren(visitor: ElementVisitor) {
+    public override fun visitChildren(visitor: ElementVisitor) {
         child?.let(visitor)
     }
 
