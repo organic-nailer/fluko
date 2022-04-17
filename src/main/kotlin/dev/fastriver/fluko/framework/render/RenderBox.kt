@@ -10,6 +10,10 @@ import dev.fastriver.fluko.framework.gesture.HitTestTarget
 abstract class RenderBox : RenderObject() {
     override var size: Size = Size.zero
 
+    override fun setupParentData(child: RenderObject) {
+        child.parentData = BoxParentData()
+    }
+
     open fun hitTest(result: HitTestResult, position: Offset): Boolean {
         if(size.contains(position)) {
             if(hitTestChildren(result, position) || hitTestSelf(position)) {

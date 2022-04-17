@@ -1,7 +1,9 @@
 package dev.fastriver.fluko.framework.geometrics
 
+import dev.fastriver.fluko.common.EdgeInsets
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
+import kotlin.math.max
 
 enum class Axis {
     Horizontal {
@@ -67,6 +69,20 @@ class BoxConstraints(
 
     /// 最大大きさのみ指定
     fun loosen() = BoxConstraints(maxWidth = maxWidth, maxHeight = maxHeight)
+
+    /**
+     * edges分だけ周囲を小さくした制約を返す
+     */
+    fun deflate(edges: EdgeInsets): BoxConstraints {
+        val horizontal = edges.left + edges.right
+        val vertical = edges.top + edges.bottom
+        val deflatedMinWidth = max(0.0, minWidth - horizontal)
+        val deflatedMinHeight = max(0.0, minHeight - vertical)
+        return BoxConstraints(
+            deflatedMinWidth, max(deflatedMinWidth, maxWidth - horizontal),
+            deflatedMinHeight, max(deflatedMinHeight, maxHeight - vertical)
+        )
+    }
 
     val smallest: Size = Size(constrainWidth(0.0), constrainHeight(0.0))
 

@@ -15,6 +15,9 @@ class RenderColoredBox(
         if(size.width != 0.0 && size.height != 0.0) {
             context.canvas.drawRect(size.and(offset), Paint().also { it.color = color })
         }
+        child?.let {
+            context.paintChild(it, offset)
+        }
     }
 
     // RenderProxyBoxWithHitTestBehavior

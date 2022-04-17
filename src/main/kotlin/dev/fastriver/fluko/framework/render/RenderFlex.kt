@@ -24,10 +24,6 @@ class RenderFlex(
     override val thisRef: RenderObject = this
     override val children: MutableList<RenderBox> = mutableListOf()
 
-    override fun setupParentData(child: RenderObject) {
-        child.parentData = BoxParentData()
-    }
-
     override fun visitChildren(visitor: RenderObjectVisitor) {
         super<ContainerRenderObject>.visitChildren(visitor)
     }

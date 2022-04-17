@@ -4,6 +4,7 @@ import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.geometrics.Alignment
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
+import dev.fastriver.fluko.framework.render.shifted.RenderPositionedBox
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

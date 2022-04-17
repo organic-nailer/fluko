@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.framework.widget.primitive
 
 import dev.fastriver.fluko.framework.geometrics.Alignment
-import dev.fastriver.fluko.framework.render.RenderPositionedBox
+import dev.fastriver.fluko.framework.render.shifted.RenderPositionedBox
 
 open class Align(
     child: Widget?,

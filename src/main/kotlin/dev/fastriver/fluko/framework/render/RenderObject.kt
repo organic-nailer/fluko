@@ -27,7 +27,7 @@ abstract class RenderObject : HitTestTarget {
     private var constraintsInternal: BoxConstraints? = null
     var needsLayout = true
     var relayoutBoundary: RenderObject? = null
-    open val sizedByParent: Boolean = false
+    private val sizedByParent: Boolean = false
     var depth: Int = 0
 
     fun redepthChild(child: RenderObject) {
@@ -62,15 +62,18 @@ abstract class RenderObject : HitTestTarget {
         } else {
             parent!!.relayoutBoundary
         }
-        if(!needsLayout && this.constraints == constraints && this.relayoutBoundary == relayoutBoundary) { // 制約とrelayoutBoundaryに変化がなく再レイアウト要求も無ければなにもしない
+        if(!needsLayout && this.constraints == constraints && this.relayoutBoundary == relayoutBoundary) {
+            // 制約とrelayoutBoundaryに変化がなく再レイアウト要求も無ければなにもしない
             return
         }
         this.constraintsInternal = constraints
-        if(this.relayoutBoundary != null && relayoutBoundary != this.relayoutBoundary) { // relayoutBoundaryに更新があった場合、子のrelayoutBoundaryを一旦リセットする
+        if(this.relayoutBoundary != null && relayoutBoundary != this.relayoutBoundary) {
+            // relayoutBoundaryに更新があった場合、子のrelayoutBoundaryを一旦リセットする
             visitChildren(cleanChildRelayoutBoundary)
         }
-        this.relayoutBoundary = relayoutBoundary // FlutterではsizedByParentでの分岐が存在するが、
-        // 簡略化のためperformResizeの機能はperformLayout内に移動する
+        this.relayoutBoundary = relayoutBoundary
+        // FlutterではsizedByParentでの分岐が存在するが、
+        // sizedByParentは常にFalseとするためperformResize()は呼ばれない
         performLayout()
 
         needsLayout = false
