@@ -3,6 +3,7 @@ package dev.fastriver.fluko.framework
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.layer.*
 import dev.fastriver.fluko.common.makeOffset
+import dev.fastriver.fluko.common.math.Matrix4
 import dev.fastriver.fluko.framework.render.RenderObject
 import dev.fastriver.fluko.framework.render.RenderView
 import org.jetbrains.skia.*
@@ -225,6 +226,21 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         }
         pushLayer(layer, painter, offset, childPaintBounds = offsetClipRect)
         return layer
+    }
+
+    fun pushTransform(
+        offset: Offset,
+        transform: Matrix4,
+        painter: PaintingContextCallback,
+        oldLayer: TransformLayer? = null
+    ): TransformLayer? {
+        canvas.save()
+        canvas.translate(offset.dx.toFloat(), offset.dy.toFloat())
+        canvas.concat(transform.toMatrix44())
+        canvas.translate(-offset.dx.toFloat(), -offset.dy.toFloat())
+        painter(this, offset)
+        canvas.restore()
+        return null
     }
 }
 

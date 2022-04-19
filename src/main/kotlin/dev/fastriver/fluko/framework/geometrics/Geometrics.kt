@@ -3,6 +3,7 @@ package dev.fastriver.fluko.framework.geometrics
 import dev.fastriver.fluko.common.EdgeInsets
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
+import org.jetbrains.skia.Rect
 import kotlin.math.max
 
 enum class Axis {
@@ -79,9 +80,45 @@ class BoxConstraints(
         val deflatedMinWidth = max(0.0, minWidth - horizontal)
         val deflatedMinHeight = max(0.0, minHeight - vertical)
         return BoxConstraints(
-            deflatedMinWidth, max(deflatedMinWidth, maxWidth - horizontal),
-            deflatedMinHeight, max(deflatedMinHeight, maxHeight - vertical)
+            deflatedMinWidth,
+            max(deflatedMinWidth, maxWidth - horizontal),
+            deflatedMinHeight,
+            max(deflatedMinHeight, maxHeight - vertical)
         )
+    }
+
+    /**
+     * 与えられたsizeの縦横比を保ったまま制約内で最大のサイズを計算する
+     */
+    fun constrainSizeAndAttemptToPreserveAspectRatio(size: Size): Size {
+        if(isTight) {
+            return smallest
+        }
+        var width = size.width
+        var height = size.height
+        val aspectRatio = size.width / size.height
+
+        // 最大幅を超えていれば縮小する
+        if(width > maxWidth) {
+            width = maxWidth
+            height = width / aspectRatio
+        }
+        if(height > maxHeight) {
+            height = maxHeight
+            width = height * aspectRatio
+        }
+
+        // 最小幅を下回っていれば拡大する
+        if(width < minWidth) {
+            width = minWidth
+            height = width / aspectRatio
+        }
+        if(height < minHeight) {
+            height = minHeight
+            width = height * aspectRatio
+        }
+
+        return Size(constrainWidth(width), constrainHeight(height))
     }
 
     val smallest: Size = Size(constrainWidth(0.0), constrainHeight(0.0))
@@ -113,5 +150,19 @@ class Alignment(val x: Double, val y: Double) {
     fun computeOffset(parentSize: Size, childSize: Size): Offset {
         val offsetIfCenter = (parentSize - childSize) as Offset
         return alongOffset(offsetIfCenter)
+    }
+
+    /**
+     * [rect]内に大きさが[size]の矩形を自身のAlignmentで配置したときのRectを返す
+     */
+    fun inscribe(size: Size, rect: Rect): Rect {
+        val halfWidthDelta = (rect.width - size.width) / 2
+        val halfHeightDelta = (rect.height - size.height) / 2
+        return Rect.makeXYWH(
+            (rect.left + halfWidthDelta + x * halfWidthDelta).toFloat(),
+            (rect.top + halfHeightDelta + y * halfHeightDelta).toFloat(),
+            size.width.toFloat(),
+            size.height.toFloat()
+        )
     }
 }
