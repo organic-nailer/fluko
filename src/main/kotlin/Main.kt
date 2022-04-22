@@ -6,6 +6,7 @@ import dev.fastriver.fluko.framework.element.BuildContext
 import dev.fastriver.fluko.framework.geometrics.MainAxisAlignment
 import dev.fastriver.fluko.framework.painting.BorderRadius
 import dev.fastriver.fluko.framework.painting.BoxFit
+import dev.fastriver.fluko.framework.render.CustomPainter
 import dev.fastriver.fluko.framework.render.TextSpan
 import dev.fastriver.fluko.framework.render.clip.CustomClipper
 import dev.fastriver.fluko.framework.runApp
@@ -16,7 +17,10 @@ import dev.fastriver.fluko.framework.widget.layout.Row
 import dev.fastriver.fluko.framework.widget.paint.ClipOval
 import dev.fastriver.fluko.framework.widget.paint.ClipPath
 import dev.fastriver.fluko.framework.widget.paint.ClipRRect
+import dev.fastriver.fluko.framework.widget.paint.CustomPaint
 import dev.fastriver.fluko.framework.widget.primitive.*
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Paint
 import org.jetbrains.skia.Path
 
 fun main() {
@@ -32,19 +36,25 @@ fun appMain() {
 class MainPage : StatelessWidget() {
     override fun build(context: BuildContext): Widget {
         return Center(
-            child = SizedBox(
-                child = ColoredBox(
-                    child = FittedBox(
-                        child = SizedBox(
-                            child = ColoredBox(
-                                color = 0xFFFF0000.toInt(),
-                            ),
-                            width = 50.0, 50.0
-                        ),
-                        fit = BoxFit.Contain
-                    ), color = 0xFF00FF00.toInt()
-                ), width = 200.0, height = 100.0
+            child = CustomPaint(
+                child = SizedBox(
+                    width = 400.0,
+                    height = 300.0,
+                    child = null
+                ),
+                painter = MayPainter()
             )
         )
     }
+}
+
+class MayPainter: CustomPainter() {
+    override fun paint(canvas: Canvas, size: Size) {
+        val paint = Paint().apply {
+            color = 0xAAFFCCBB.toInt()
+        }
+        canvas.drawCircle(100f, 100f, 50f, paint)
+    }
+
+    override fun shouldRepaint(oldDelegate: CustomPainter): Boolean = true
 }
