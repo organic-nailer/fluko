@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.engine
 
+import dev.fastriver.fluko.common.KeyEvent
 import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.layer.Layer
 import dev.fastriver.fluko.common.layer.LayerTree
@@ -56,6 +57,10 @@ class Shell(
 
     override fun onPointerEvent(event: PointerEvent) {
         binding.handlePointerEvent(event)
+    }
+
+    override fun onKeyEvent(event: KeyEvent) {
+        binding.handleKeyEvent(event)
     }
 
     fun run(appMain: () -> Unit) {

@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.engine
 
+import dev.fastriver.fluko.common.KeyEvent
 import dev.fastriver.fluko.common.PointerEvent
 import org.jetbrains.skia.DirectContext
 import org.lwjgl.glfw.GLFW
@@ -10,6 +11,7 @@ class GLView(
 ) {
     private var windowHandle: Long = -1
     private val pointerController: PointerController
+    private val keyboardController: KeyboardController
 
     init {
         GLFW.glfwInit()
@@ -21,6 +23,18 @@ class GLView(
         pointerController = PointerController(windowHandle) {
             delegate.onPointerEvent(it)
         }
+        keyboardController = KeyboardController(windowHandle) {
+            if(!checkWindowClose(it))
+                delegate.onKeyEvent(it)
+        }
+    }
+
+    private fun checkWindowClose(event: KeyEvent): Boolean {
+        if(event.logicalKeyboardKey == GLFW.GLFW_KEY_ESCAPE && event.phase == KeyEvent.KeyEventPhase.KeyDown) {
+            GLFW.glfwSetWindowShouldClose(windowHandle, true)
+            return true
+        }
+        return false
     }
 
     fun windowShouldClose(): Boolean {
@@ -47,5 +61,7 @@ class GLView(
 
     interface GLViewDelegate {
         fun onPointerEvent(event: PointerEvent)
+
+        fun onKeyEvent(event: KeyEvent)
     }
 }

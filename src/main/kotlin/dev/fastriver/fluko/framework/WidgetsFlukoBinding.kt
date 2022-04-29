@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.framework
 
+import dev.fastriver.fluko.common.KeyEvent
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.PointerEventPhase
@@ -121,6 +122,10 @@ object WidgetsFlukoBinding : WidgetsBinding, HitTestTarget {
         if(hitTestResult != null || event.phase == PointerEventPhase.Add || event.phase == PointerEventPhase.Remove) {
             dispatchEvent(event, hitTestResult)
         }
+    }
+
+    override fun handleKeyEvent(event: KeyEvent) {
+        println(event)
     }
 
     private fun hitTest(hitTestResult: HitTestResult, position: Offset) {

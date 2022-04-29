@@ -21,13 +21,6 @@ fun runFluko(
         appMain()
     }
 
-    shell.glView.setKeyCallback { window, key, code, action, mods ->
-        if(key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_PRESS) {
-            GLFW.glfwSetWindowShouldClose(window, true)
-            return@setKeyCallback
-        }
-    }
-
     while(!shell.glView.windowShouldClose()) {
         // 垂直同期がよくわからないので30ミリ秒ごとにvsyncを呼ぶことにする
         Thread.sleep(30)

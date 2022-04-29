@@ -1,5 +1,6 @@
 package dev.fastriver.fluko.framework
 
+import dev.fastriver.fluko.common.KeyEvent
 import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.layer.Layer
 import dev.fastriver.fluko.framework.widget.primitive.Widget
@@ -27,4 +28,6 @@ interface WidgetsBinding {
     fun beginFrame(elapsedTime: Duration)
 
     fun handlePointerEvent(event: PointerEvent)
+
+    fun handleKeyEvent(event: KeyEvent)
 }
