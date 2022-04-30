@@ -30,4 +30,6 @@ interface WidgetsBinding {
     fun handlePointerEvent(event: PointerEvent)
 
     fun handleKeyEvent(event: KeyEvent)
+
+    fun handleMetricsChanged()
 }

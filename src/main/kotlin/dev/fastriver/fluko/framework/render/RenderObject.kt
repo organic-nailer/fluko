@@ -3,11 +3,13 @@ package dev.fastriver.fluko.framework.render
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.common.layer.ContainerLayer
+import dev.fastriver.fluko.common.math.Matrix4
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestResult
 import dev.fastriver.fluko.framework.gesture.HitTestTarget
+import org.jetbrains.skia.Rect
 import kotlin.reflect.KProperty
 
 abstract class RenderObject : HitTestTarget {
@@ -189,6 +191,35 @@ abstract class RenderObject : HitTestTarget {
     open fun dispose() {
         layer = null
     }
+
+    fun getTransformTo(ancestor: RenderObject? = null): Matrix4 {
+        val ancestorSpecified = ancestor != null
+        var resolvedAncestor: RenderObject? = ancestor
+        if(ancestor == null) {
+            val rootNode = owner!!.renderView
+            if(rootNode is RenderObject) {
+                resolvedAncestor = rootNode
+            }
+        }
+        val renderers = mutableListOf<RenderObject>()
+        var renderer = this
+        while(renderer != resolvedAncestor) {
+            renderers.add(renderer)
+            renderer = renderer.parent!!
+        }
+        if(ancestorSpecified) {
+            renderers.add(ancestor!!)
+        }
+        var transform = Matrix4.identity
+        for(index in (renderers.size - 1) downTo 1) {
+            transform = renderers[index].applyPaintTransform(renderers[index - 1], transform)
+        }
+        return transform
+    }
+
+    abstract val semanticBounds: Rect
+
+    open fun applyPaintTransform(child: RenderObject, transform: Matrix4): Matrix4 = transform
 }
 
 typealias RenderObjectVisitor = (child: RenderObject) -> Unit
@@ -307,7 +338,8 @@ interface ContainerRenderObject<ChildType : RenderObject> {
     fun defaultHitTestChildren(result: HitTestResult, position: Offset): Boolean {
         for(child in children) {
             val childParentData = child.parentData as BoxParentData
-            val isHit = result.addWithPaintOffset(offset = childParentData.offset,
+            val isHit = result.addWithPaintOffset(
+                offset = childParentData.offset,
                 position = position,
                 hitTest = { result, transformed ->
                     (child as RenderBox).hitTest(result, transformed)

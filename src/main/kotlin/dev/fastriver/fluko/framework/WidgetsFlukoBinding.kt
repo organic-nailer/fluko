@@ -46,7 +46,7 @@ object WidgetsFlukoBinding : WidgetsBinding, HitTestTarget {
         pipeline = RenderPipeline(onNeedVisualUpdate = {
             ensureVisualUpdate()
         }).apply {
-            renderView = RenderView(configuration.width.toDouble(), configuration.height.toDouble())
+            renderView = RenderView(configuration)
             renderView!!.prepareInitialFrame()
         }
     }
@@ -126,6 +126,11 @@ object WidgetsFlukoBinding : WidgetsBinding, HitTestTarget {
 
     override fun handleKeyEvent(event: KeyEvent) {
         println(event)
+    }
+
+    override fun handleMetricsChanged() {
+        val configuration = engine.viewConfiguration
+        pipeline.renderView!!.configuration = configuration
     }
 
     private fun hitTest(hitTestResult: HitTestResult, position: Offset) {

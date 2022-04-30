@@ -109,4 +109,12 @@ class RenderFittedBox(
             super.hitTestChildren(r, p)
         })
     }
+
+    override fun applyPaintTransform(child: RenderObject, transform: Matrix4): Matrix4 {
+        if(size.isEmpty || child.size.isEmpty) {
+            return Matrix4.zero
+        }
+        updatePaintData()
+        return transform * this.transform!!
+    }
 }

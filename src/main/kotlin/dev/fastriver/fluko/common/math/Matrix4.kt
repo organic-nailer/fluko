@@ -106,6 +106,11 @@ class Matrix4(
 
     fun getAsTranslation(): Offset? = if(isTranslation) Offset(mat[3].toDouble(), mat[7].toDouble()) else null
 
+    fun transformPoint(point: Offset): Offset {
+        val result = perspectiveTransform(Vector3(listOf(point.dx.toFloat(), point.dy.toFloat(), 0f)))
+        return Offset(result.vector[0].toDouble() / result.vector[2], result.vector[1].toDouble() / result.vector[2])
+    }
+
     /**
      * 逆行列を計算する
      *

@@ -196,6 +196,10 @@ abstract class Element(
     protected open fun updateInheritance() {
         inheritedWidgets = parent?.inheritedWidgets
     }
+
+    override fun findRenderObject(): RenderObject? {
+        return renderObject
+    }
 }
 
 typealias ElementVisitor = (child: Element) -> Unit

@@ -7,18 +7,28 @@ import dev.fastriver.fluko.common.layer.ContainerLayer
 import dev.fastriver.fluko.common.layer.TransformLayer
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
+import dev.fastriver.fluko.framework.ViewConfiguration
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestEntry
 import dev.fastriver.fluko.framework.gesture.HitTestResult
 import dev.fastriver.fluko.framework.gesture.HitTestTarget
+import org.jetbrains.skia.Rect
 
-class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWithChild<RenderBox> {
-    override var size: Size = Size(width, height)
+class RenderView(
+    configuration: ViewConfiguration
+) : RenderObject(), RenderObjectWithChild<RenderBox> {
+    override var size: Size = Size.zero
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
     override val isRepaintBoundary: Boolean = true
+
+    var configuration: ViewConfiguration by MarkLayoutProperty(configuration)
+
     override fun performLayout() {
+        size = configuration.size
+        println("${size.width}, ${size.height}")
         child?.layout(BoxConstraints.tight(size))
     }
+
 
     override fun paint(context: PaintingContext, offset: Offset) {
         if(child != null) {
@@ -68,4 +78,7 @@ class RenderView(width: Double, height: Double) : RenderObject(), RenderObjectWi
     override fun handleEvent(event: PointerEvent, entry: HitTestEntry) {
         // Do Nothing
     }
+
+    override val semanticBounds: Rect
+        get() = size.and(Offset.zero)
 }

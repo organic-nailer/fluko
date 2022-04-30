@@ -27,6 +27,9 @@ class GLView(
             if(!checkWindowClose(it))
                 delegate.onKeyEvent(it)
         }
+        GLFW.glfwSetWindowSizeCallback(windowHandle) { _, width, height ->
+            delegate.onWindowMetricsChanged(width, height)
+        }
     }
 
     private fun checkWindowClose(event: KeyEvent): Boolean {
@@ -63,5 +66,7 @@ class GLView(
         fun onPointerEvent(event: PointerEvent)
 
         fun onKeyEvent(event: KeyEvent)
+
+        fun onWindowMetricsChanged(width: Int, height: Int)
     }
 }

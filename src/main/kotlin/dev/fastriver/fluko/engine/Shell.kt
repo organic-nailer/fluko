@@ -2,6 +2,7 @@ package dev.fastriver.fluko.engine
 
 import dev.fastriver.fluko.common.KeyEvent
 import dev.fastriver.fluko.common.PointerEvent
+import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.common.layer.Layer
 import dev.fastriver.fluko.common.layer.LayerTree
 import dev.fastriver.fluko.framework.Engine
@@ -43,7 +44,7 @@ class Shell(
         }
     }
 
-    override val viewConfiguration: ViewConfiguration = ViewConfiguration(width, height)
+    override var viewConfiguration: ViewConfiguration = ViewConfiguration(Size(width.toDouble(),height.toDouble()))
 
     override fun render(rootLayer: Layer) {
         val layerTree = LayerTree().apply {
@@ -61,6 +62,12 @@ class Shell(
 
     override fun onKeyEvent(event: KeyEvent) {
         binding.handleKeyEvent(event)
+    }
+
+    override fun onWindowMetricsChanged(width: Int, height: Int) {
+        viewConfiguration = ViewConfiguration(Size(width.toDouble(),height.toDouble()))
+        rasterizer!!.updateMetrics(width, height)
+        binding.handleMetricsChanged()
     }
 
     fun run(appMain: () -> Unit) {

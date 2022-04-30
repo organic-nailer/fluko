@@ -1,5 +1,7 @@
 package dev.fastriver.fluko.framework.element
 
+import dev.fastriver.fluko.common.Size
+import dev.fastriver.fluko.framework.ViewConfiguration
 import dev.fastriver.fluko.framework.render.RenderConstrainedBox
 import dev.fastriver.fluko.framework.render.RenderView
 import dev.fastriver.fluko.framework.widget.primitive.RenderObjectToWidgetAdapter
@@ -10,7 +12,7 @@ import org.junit.jupiter.api.Test
 internal class ElementTest {
     @Test
     fun updateElement() {
-        val renderView = RenderView(100.0, 100.0)
+        val renderView = RenderView(ViewConfiguration(Size(100.0,100.0)))
         val buildOwner = BuildOwner { }
         val viewWidget = SizedBox(child = null, width = 50.0, height = 50.0)
         val rootWidget = RenderObjectToWidgetAdapter(
