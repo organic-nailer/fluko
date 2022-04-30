@@ -12,7 +12,7 @@ import dev.fastriver.fluko.framework.WidgetsFlukoBinding
 import kotlin.time.Duration
 
 class Shell(
-    val taskRunners: TaskRunners, var rasterizer: Rasterizer?, val width: Int, val height: Int
+    private val taskRunners: TaskRunners, var rasterizer: Rasterizer?, val width: Int, val height: Int
 ) : Engine, GLView.GLViewDelegate {
     var glView: GLView = GLView(width, height, this)
     private var binding: WidgetsBinding = WidgetsFlukoBinding

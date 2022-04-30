@@ -2,7 +2,6 @@ package dev.fastriver.fluko.engine
 
 import dev.fastriver.fluko.common.layer.LayerTree
 import dev.fastriver.fluko.common.layer.PaintContext
-import dev.fastriver.fluko.framework.ViewConfiguration
 import org.jetbrains.skia.*
 import org.lwjgl.opengl.GL11
 
@@ -29,7 +28,6 @@ class Rasterizer(width: Int, height: Int, val context: DirectContext) {
         layerTree.preroll()
 
         surface.canvas.clear(0xFFFFFFFF.toInt())
-        println("surface: (${surface.width}, ${surface.height})")
         layerTree.paint(
             PaintContext(
                 surface.canvas, context

@@ -4,7 +4,7 @@ import dev.fastriver.fluko.common.KeyEvent
 import org.lwjgl.glfw.GLFW
 
 class KeyboardController(
-    private val windowHandle: Long, private val onEventCallback: (KeyEvent) -> Unit
+    windowHandle: Long, private val onEventCallback: (KeyEvent) -> Unit
 ) {
     init {
         GLFW.glfwSetKeyCallback(windowHandle) { _, key: Int, code: Int, action: Int, mods: Int ->

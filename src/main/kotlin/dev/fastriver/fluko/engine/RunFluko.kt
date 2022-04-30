@@ -1,7 +1,5 @@
 package dev.fastriver.fluko.engine
 
-import org.lwjgl.glfw.GLFW
-
 fun runFluko(
     appMain: () -> Unit, windowWidth: Int = 640, windowHeight: Int = 480
 ) {

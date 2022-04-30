@@ -58,10 +58,6 @@ class GLView(
         return DirectContext.makeGL()
     }
 
-    fun setKeyCallback(callback: (window: Long, key: Int, code: Int, action: Int, mods: Int) -> Unit) {
-        GLFW.glfwSetKeyCallback(windowHandle, callback)
-    }
-
     interface GLViewDelegate {
         fun onPointerEvent(event: PointerEvent)
 
