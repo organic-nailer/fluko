@@ -56,26 +56,41 @@ class Shell(
         }
     }
 
+    /**
+    * クリックイベントが流れてくる関数
+    */
     override fun onPointerEvent(event: PointerEvent) {
         binding.handlePointerEvent(event)
     }
 
+    /**
+    * キーボードイベントが流れてくる関数
+    */
     override fun onKeyEvent(event: KeyEvent) {
         binding.handleKeyEvent(event)
     }
 
+    /**
+    * ウィンドウサイズが変更された場合に呼ばれる関数
+    */
     override fun onWindowMetricsChanged(width: Int, height: Int) {
         viewConfiguration = ViewConfiguration(Size(width.toDouble(),height.toDouble()))
         rasterizer!!.updateMetrics(width, height)
         binding.handleMetricsChanged()
     }
 
+    /**
+    * UIスレッドの開始
+    */
     fun run(appMain: () -> Unit) {
         taskRunners.uiTaskRunner.postTask {
             appMain()
         }
     }
 
+    /**
+    * 垂直同期信号
+    */
     fun onVsync() {
         val elapsedTime = timingMeasurer.getElapsedTime()
         vsyncCallback?.invoke(elapsedTime)
