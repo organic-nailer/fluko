@@ -42,7 +42,7 @@ abstract class Element(
     /**
      * 子へのアクセス。子を持つElementはoverrideすること
      */
-    protected open fun visitChildren(visitor: ElementVisitor) {
+    open fun visitChildren(visitor: ElementVisitor) {
 
     }
 

@@ -3,6 +3,7 @@ package dev.fastriver.fluko.framework.element
 import dev.fastriver.fluko.framework.widget.primitive.RenderObjectWidget
 import dev.fastriver.fluko.framework.widget.primitive.Widget
 import dev.fastriver.fluko.framework.render.RenderObject
+import dev.fastriver.fluko.framework.widget.primitive.ParentDataWidget
 
 abstract class RenderObjectElement<T: RenderObject>(
     widget: RenderObjectWidget<T>
@@ -112,6 +113,10 @@ abstract class RenderObjectElement<T: RenderObject>(
     //        renderObject!!.dispose()
     //        renderObjectInternal = null
     //    }
+
+    fun updateParentData(parentDataWidget: ParentDataWidget<*>) {
+        parentDataWidget.applyParentData(renderObject!!)
+    }
 
     override fun attachRenderObject() {
         ancestorRenderObjectElement = findAncestorRenderObjectElement()
