@@ -120,7 +120,11 @@ abstract class RenderObjectElement<T: RenderObject>(
 
     override fun attachRenderObject() {
         ancestorRenderObjectElement = findAncestorRenderObjectElement()
-        ancestorRenderObjectElement?.insertRenderObjectChild(renderObject!!) //TODO: parentDataElement
+        ancestorRenderObjectElement?.insertRenderObjectChild(renderObject!!)
+        val parentDataElement = findAncestorParentDataElement()
+        parentDataElement?.let {
+            updateParentData(it.widget as ParentDataWidget<*>)
+        }
     }
 
     override fun detachRenderObject() {
@@ -139,6 +143,19 @@ abstract class RenderObjectElement<T: RenderObject>(
             ancestor = ancestor.parent
         }
         return ancestor as RenderObjectElement<*>?
+    }
+
+    private fun findAncestorParentDataElement(): ParentDataElement<*>? {
+        var ancestor = parent
+        var result: ParentDataElement<*>? = null
+        while(ancestor != null && ancestor !is RenderObjectElement<*>) {
+            if(ancestor is ParentDataElement<*>) {
+                result = ancestor
+                break
+            }
+            ancestor = ancestor.parent
+        }
+        return result
     }
 
     /**

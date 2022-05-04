@@ -1,6 +1,5 @@
 package dev.fastriver.fluko.framework.render
 
-import com.sun.tools.javac.Main
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.framework.*

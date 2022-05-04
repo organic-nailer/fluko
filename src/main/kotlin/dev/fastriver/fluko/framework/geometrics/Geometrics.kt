@@ -63,13 +63,29 @@ class BoxConstraints(
         return height.coerceIn(minHeight..maxHeight)
     }
 
-    /// 制約内に修正したサイズを返す
+    /**
+     * 制約内に修正したサイズを返す
+     */
     fun constrain(size: Size): Size {
         return Size(constrainWidth(size.width), constrainHeight(size.height))
     }
 
-    /// 最大大きさのみ指定
+    /**
+     * 最大大きさのみを残す
+     */
     fun loosen() = BoxConstraints(maxWidth = maxWidth, maxHeight = maxHeight)
+
+    /**
+     * 現在の制約内で、指定された幅で強い制約にする
+     */
+    fun tighten(width: Double? = null, height: Double? = null): BoxConstraints {
+        return BoxConstraints(
+            minWidth = width?.coerceIn(minWidth, maxWidth) ?: minWidth,
+            maxWidth = width?.coerceIn(minWidth, maxWidth) ?: maxWidth,
+            minHeight = height?.coerceIn(minHeight, maxHeight) ?: minHeight,
+            maxHeight = height?.coerceIn(minHeight, maxHeight) ?: maxHeight
+        )
+    }
 
     /**
      * edges分だけ周囲を小さくした制約を返す
@@ -121,6 +137,7 @@ class BoxConstraints(
         return Size(constrainWidth(width), constrainHeight(height))
     }
 
+    val biggest: Size = Size(constrainWidth(Double.POSITIVE_INFINITY), constrainHeight(Double.POSITIVE_INFINITY))
     val smallest: Size = Size(constrainWidth(0.0), constrainHeight(0.0))
 
     val hasTightWidth: Boolean = minWidth >= maxWidth
@@ -141,7 +158,7 @@ class Alignment(val x: Double, val y: Double) {
         val bottomRight = Alignment(1.0, 1.0)
     }
 
-    private fun alongOffset(other: Offset): Offset {
+    fun alongOffset(other: Offset): Offset {
         val centerX = other.dx / 2.0
         val centerY = other.dy / 2.0
         return Offset((1 + x) * centerX, (1 + y) * centerY)
