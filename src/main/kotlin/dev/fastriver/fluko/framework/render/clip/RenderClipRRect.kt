@@ -11,11 +11,10 @@ import dev.fastriver.fluko.framework.render.RenderBox
 import org.jetbrains.skia.RRect
 
 class RenderClipRRect(
-    child: RenderBox? = null,
     borderRadius: BorderRadius,
     clipper: CustomClipper<RRect>?,
     clipBehavior: Clip = Clip.AntiAlias
-): RenderCustomClip<RRect>(child, clipper, clipBehavior) {
+): RenderCustomClip<RRect>(clipper, clipBehavior) {
     var borderRadius: BorderRadius = borderRadius
         set(value) {
             if(field == value) return

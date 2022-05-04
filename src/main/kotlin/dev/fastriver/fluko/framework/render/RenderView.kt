@@ -11,7 +11,6 @@ import dev.fastriver.fluko.framework.ViewConfiguration
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestEntry
 import dev.fastriver.fluko.framework.gesture.HitTestResult
-import dev.fastriver.fluko.framework.gesture.HitTestTarget
 import org.jetbrains.skia.Rect
 
 class RenderView(

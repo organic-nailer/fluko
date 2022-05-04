@@ -6,9 +6,8 @@ import dev.fastriver.fluko.framework.render.MarkLayoutProperty
 import dev.fastriver.fluko.framework.render.RenderBox
 
 abstract class RenderAligningShiftedBox(
-    alignment: Alignment = Alignment.center,
-    child: RenderBox? = null
-): RenderShiftedBox(child) {
+    alignment: Alignment = Alignment.center
+): RenderShiftedBox() {
     var alignment: Alignment by MarkLayoutProperty(alignment)
 
     protected fun alignChild() {

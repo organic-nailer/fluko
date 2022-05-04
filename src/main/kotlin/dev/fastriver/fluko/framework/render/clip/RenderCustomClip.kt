@@ -7,7 +7,7 @@ import dev.fastriver.fluko.framework.render.RenderBox
 import dev.fastriver.fluko.framework.render.RenderProxyBox
 
 abstract class RenderCustomClip<T>(
-    child: RenderBox? = null, clipper: CustomClipper<T>? = null, clipBehavior: Clip = Clip.AntiAlias
+    clipper: CustomClipper<T>? = null, clipBehavior: Clip = Clip.AntiAlias
 ) : RenderProxyBox() {
     var clipper: CustomClipper<T>? = clipper
         set(newClipper) {

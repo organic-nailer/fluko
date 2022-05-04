@@ -14,7 +14,6 @@ import dev.fastriver.fluko.framework.painting.BoxFit
 class RenderFittedBox(
     fit: BoxFit = BoxFit.Contain,
     alignment: Alignment = Alignment.center,
-    child: RenderBox? = null,
     clipBehavior: Clip = Clip.None
 ) : RenderProxyBox() {
     var fit: BoxFit by MarkLayoutProperty(fit)

@@ -9,9 +9,7 @@ import dev.fastriver.fluko.framework.render.RenderBox
 import dev.fastriver.fluko.framework.render.RenderObjectVisitor
 import dev.fastriver.fluko.framework.render.RenderObjectWithChild
 
-abstract class RenderShiftedBox(
-    child: RenderBox?
-): RenderBox(), RenderObjectWithChild<RenderBox> {
+abstract class RenderShiftedBox: RenderBox(), RenderObjectWithChild<RenderBox> {
     override var child: RenderBox? by RenderObjectWithChild.ChildDelegate()
 
     override fun paint(context: PaintingContext, offset: Offset) {

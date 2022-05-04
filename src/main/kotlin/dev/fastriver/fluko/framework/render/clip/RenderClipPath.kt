@@ -9,8 +9,8 @@ import dev.fastriver.fluko.framework.render.RenderBox
 import org.jetbrains.skia.Path
 
 class RenderClipPath(
-    child: RenderBox? = null, clipper: CustomClipper<Path>? = null, clipBehavior: Clip = Clip.AntiAlias
-) : RenderCustomClip<Path>(child, clipper, clipBehavior) {
+    clipper: CustomClipper<Path>? = null, clipBehavior: Clip = Clip.AntiAlias
+) : RenderCustomClip<Path>(clipper, clipBehavior) {
 
     override val defaultClip: Path
         get() = Path().apply {

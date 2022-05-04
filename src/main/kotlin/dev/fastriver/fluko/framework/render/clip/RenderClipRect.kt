@@ -10,8 +10,8 @@ import dev.fastriver.fluko.framework.render.RenderBox
 import org.jetbrains.skia.Rect
 
 class RenderClipRect(
-    child: RenderBox? = null, clipper: CustomClipper<Rect>? = null, clipBehavior: Clip = Clip.AntiAlias
-) : RenderCustomClip<Rect>(child, clipper, clipBehavior) {
+    clipper: CustomClipper<Rect>? = null, clipBehavior: Clip = Clip.AntiAlias
+) : RenderCustomClip<Rect>(clipper, clipBehavior) {
     override val defaultClip: Rect
         get() = size.and(Offset.zero)
 

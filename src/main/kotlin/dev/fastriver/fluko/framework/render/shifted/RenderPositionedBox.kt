@@ -8,9 +8,8 @@ import dev.fastriver.fluko.framework.render.RenderBox
 class RenderPositionedBox(
     widthFactor: Double? = null,
     heightFactor: Double? = null,
-    alignment: Alignment = Alignment.center,
-    child: RenderBox? = null
-) : RenderAligningShiftedBox(alignment, child) {
+    alignment: Alignment = Alignment.center
+) : RenderAligningShiftedBox(alignment) {
     var widthFactor: Double? by MarkLayoutProperty(widthFactor)
     var heightFactor: Double? by MarkLayoutProperty(heightFactor)
 

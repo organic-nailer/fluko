@@ -11,8 +11,8 @@ import org.jetbrains.skia.Path
 import org.jetbrains.skia.Rect
 
 class RenderClipOval(
-    child: RenderBox? = null, clipper: CustomClipper<Rect>? = null, clipBehavior: Clip = Clip.AntiAlias
-) : RenderCustomClip<Rect>(child, clipper, clipBehavior) {
+    clipper: CustomClipper<Rect>? = null, clipBehavior: Clip = Clip.AntiAlias
+) : RenderCustomClip<Rect>(clipper, clipBehavior) {
     override val defaultClip: Rect
         get() = size.and(Offset.zero)
 

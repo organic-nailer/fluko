@@ -8,9 +8,8 @@ import dev.fastriver.fluko.framework.render.MarkLayoutProperty
 import dev.fastriver.fluko.framework.render.RenderBox
 
 class RenderPadding(
-    padding: EdgeInsets,
-    child: RenderBox? = null
-): RenderShiftedBox(child) {
+    padding: EdgeInsets
+): RenderShiftedBox() {
     var padding: EdgeInsets by MarkLayoutProperty(padding)
 
     override fun performLayout() {
