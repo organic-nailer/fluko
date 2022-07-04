@@ -56,7 +56,7 @@ class RenderView(
 
     fun prepareInitialFrame() {
         scheduleInitialLayout()
-        scheduleInitialPaint(TransformLayer(offset = Offset.zero))
+        scheduleInitialPaint(TransformLayer())
     }
 
     private fun scheduleInitialLayout() {

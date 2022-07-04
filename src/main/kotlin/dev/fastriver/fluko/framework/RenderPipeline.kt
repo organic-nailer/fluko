@@ -63,9 +63,9 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
          * [RenderObject.isRepaintBoundary] == trueのRenderObjectの下位Layerを再構築する
          */
         fun repaintCompositedChild(child: RenderObject) {
-            var childLayer = child.layer as OffsetLayer?
+            var childLayer = child.layer as TransformLayer?
             if(childLayer == null) {
-                childLayer = OffsetLayer()
+                childLayer = TransformLayer()
                 child.layer = childLayer
             } else {
                 childLayer.removeAllChildren()
@@ -134,8 +134,8 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         if(child.needsPaint) {
             repaintCompositedChild(child)
         }
-        val childOffsetLayer = child.layer as OffsetLayer
-        childOffsetLayer.offset = offset
+        val childOffsetLayer = child.layer as TransformLayer
+        childOffsetLayer.transform = Matrix33.makeTranslate(offset.dx.toFloat(), offset.dy.toFloat())
         appendLayer(childOffsetLayer)
     }
 

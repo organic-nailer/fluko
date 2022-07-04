@@ -95,21 +95,9 @@ open class ContainerLayer : Layer() {
     }
 }
 
-open class OffsetLayer(
-    open var offset: Offset = Offset.zero
-) : ContainerLayer() {
-    override fun clone(): Layer {
-        val cloned = OffsetLayer(offset)
-        for(child in children) {
-            cloned.append(child.clone())
-        }
-        return cloned
-    }
-}
-
 class TransformLayer(
-    val transform: Matrix33 = Matrix33.IDENTITY, offset: Offset
-) : OffsetLayer(offset) {
+    var transform: Matrix33 = Matrix33.IDENTITY
+) : ContainerLayer() {
 
     override fun preroll(context: PrerollContext, matrix: Matrix33) {
         val childMatrix = matrix.makeConcat(transform)
@@ -129,7 +117,7 @@ class TransformLayer(
     }
 
     override fun clone(): Layer {
-        val cloned = TransformLayer(transform, offset)
+        val cloned = TransformLayer(transform)
         for(child in children) {
             cloned.append(child.clone())
         }
@@ -158,8 +146,8 @@ class PictureLayer(
 }
 
 class OpacityLayer(
-    var alpha: Int? = null, offset: Offset = Offset.zero
-) : OffsetLayer(offset) {
+    var alpha: Int? = null, var offset: Offset = Offset.zero
+) : ContainerLayer() {
     override fun preroll(context: PrerollContext, matrix: Matrix33) {
         val childMatrix = matrix.transform(offset)
 
