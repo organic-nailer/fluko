@@ -3,11 +3,11 @@ package dev.fastriver.fluko.framework.render
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
 import dev.fastriver.fluko.common.layer.Clip
-import dev.fastriver.fluko.common.layer.ClipRectLayer
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.geometrics.Alignment
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestResult
+import dev.fastriver.fluko.framework.layer.ClipRectFrameworkLayer
 import kotlin.math.max
 
 enum class StackFit {
@@ -66,7 +66,7 @@ class RenderStack(
     var fit: StackFit by MarkLayoutProperty(fit)
     var clipBehavior: Clip by MarkPaintProperty(clipBehavior)
     private var hasVisualOverflow = false
-    private var clipRectLayer: ClipRectLayer? = null
+    private var clipRectLayer: ClipRectFrameworkLayer? = null
 
     override val thisRef: RenderObject = this
     override val children: MutableList<RenderBox> = mutableListOf()

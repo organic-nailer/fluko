@@ -2,7 +2,7 @@ package dev.fastriver.fluko.framework
 
 import dev.fastriver.fluko.common.KeyEvent
 import dev.fastriver.fluko.common.PointerEvent
-import dev.fastriver.fluko.common.layer.Layer
+import dev.fastriver.fluko.framework.layer.FrameworkLayer
 import dev.fastriver.fluko.framework.widget.primitive.Widget
 import kotlin.time.Duration
 
@@ -17,7 +17,7 @@ fun runApp(app: Widget) {
 interface Engine {
     val viewConfiguration: ViewConfiguration
 
-    fun render(rootLayer: Layer)
+    fun render(rootLayer: FrameworkLayer)
 
     fun scheduleFrame()
 }

@@ -3,12 +3,12 @@ package dev.fastriver.fluko.engine
 import dev.fastriver.fluko.common.KeyEvent
 import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.Size
-import dev.fastriver.fluko.common.layer.Layer
-import dev.fastriver.fluko.common.layer.LayerTree
+import dev.fastriver.fluko.engine.layer.SceneBuilder
 import dev.fastriver.fluko.framework.Engine
 import dev.fastriver.fluko.framework.ViewConfiguration
 import dev.fastriver.fluko.framework.WidgetsBinding
 import dev.fastriver.fluko.framework.WidgetsFlukoBinding
+import dev.fastriver.fluko.framework.layer.FrameworkLayer
 import kotlin.time.Duration
 
 class Shell(
@@ -44,12 +44,19 @@ class Shell(
         }
     }
 
-    override var viewConfiguration: ViewConfiguration = ViewConfiguration(Size(width.toDouble(),height.toDouble()))
+    override var viewConfiguration: ViewConfiguration = ViewConfiguration(Size(width.toDouble(), height.toDouble()))
 
-    override fun render(rootLayer: Layer) {
-        val layerTree = LayerTree().apply {
-            this.rootLayer = rootLayer.clone()
+    /**
+     * RenderView.compositeFrame()とwindow.render()部分の実装
+     */
+    override fun render(rootLayer: FrameworkLayer) {
+        val builder = SceneBuilder()
+        rootLayer.apply {
+            updateSubtreeNeedsAddToScene()
+            addToScene(builder)
+            needsAddToScene = false
         }
+        val layerTree = builder.build()
         taskRunners.rasterTaskRunner.postTask {
             rasterizer!!.drawToSurface(layerTree)
             glView.swapBuffers()
@@ -57,31 +64,31 @@ class Shell(
     }
 
     /**
-    * クリックイベントが流れてくる関数
-    */
+     * クリックイベントが流れてくる関数
+     */
     override fun onPointerEvent(event: PointerEvent) {
         binding.handlePointerEvent(event)
     }
 
     /**
-    * キーボードイベントが流れてくる関数
-    */
+     * キーボードイベントが流れてくる関数
+     */
     override fun onKeyEvent(event: KeyEvent) {
         binding.handleKeyEvent(event)
     }
 
     /**
-    * ウィンドウサイズが変更された場合に呼ばれる関数
-    */
+     * ウィンドウサイズが変更された場合に呼ばれる関数
+     */
     override fun onWindowMetricsChanged(width: Int, height: Int) {
-        viewConfiguration = ViewConfiguration(Size(width.toDouble(),height.toDouble()))
+        viewConfiguration = ViewConfiguration(Size(width.toDouble(), height.toDouble()))
         rasterizer!!.updateMetrics(width, height)
         binding.handleMetricsChanged()
     }
 
     /**
-    * UIスレッドの開始
-    */
+     * UIスレッドの開始
+     */
     fun run(appMain: () -> Unit) {
         taskRunners.uiTaskRunner.postTask {
             appMain()
@@ -89,8 +96,8 @@ class Shell(
     }
 
     /**
-    * 垂直同期信号
-    */
+     * 垂直同期信号
+     */
     fun onVsync() {
         val elapsedTime = timingMeasurer.getElapsedTime()
         vsyncCallback?.invoke(elapsedTime)

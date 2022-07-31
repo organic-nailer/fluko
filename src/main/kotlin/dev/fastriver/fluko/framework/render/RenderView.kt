@@ -3,14 +3,15 @@ package dev.fastriver.fluko.framework.render
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.PointerEvent
 import dev.fastriver.fluko.common.Size
-import dev.fastriver.fluko.common.layer.ContainerLayer
-import dev.fastriver.fluko.common.layer.TransformLayer
+import dev.fastriver.fluko.common.math.Matrix4
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.ViewConfiguration
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestEntry
 import dev.fastriver.fluko.framework.gesture.HitTestResult
+import dev.fastriver.fluko.framework.layer.ContainerFrameworkLayer
+import dev.fastriver.fluko.framework.layer.TransformFrameworkLayer
 import org.jetbrains.skia.Rect
 
 class RenderView(
@@ -55,7 +56,7 @@ class RenderView(
 
     fun prepareInitialFrame() {
         scheduleInitialLayout()
-        scheduleInitialPaint(TransformLayer(offset = Offset.zero))
+        scheduleInitialPaint(TransformFrameworkLayer(transform = Matrix4.identity))
     }
 
     private fun scheduleInitialLayout() {
@@ -63,7 +64,7 @@ class RenderView(
         owner!!.nodesNeedingLayout.add(this)
     }
 
-    private fun scheduleInitialPaint(rootLayer: ContainerLayer) {
+    private fun scheduleInitialPaint(rootLayer: ContainerFrameworkLayer) {
         layer = rootLayer
         owner!!.nodesNeedingPaint.add(this)
     }

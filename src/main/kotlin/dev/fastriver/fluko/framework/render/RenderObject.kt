@@ -2,13 +2,13 @@ package dev.fastriver.fluko.framework.render
 
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.Size
-import dev.fastriver.fluko.common.layer.ContainerLayer
 import dev.fastriver.fluko.common.math.Matrix4
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.RenderPipeline
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestResult
 import dev.fastriver.fluko.framework.gesture.HitTestTarget
+import dev.fastriver.fluko.framework.layer.ContainerFrameworkLayer
 import org.jetbrains.skia.Rect
 import kotlin.reflect.KProperty
 
@@ -47,7 +47,7 @@ abstract class RenderObject : HitTestTarget {
      * [isRepaintBoundary] == true のときしか使われない。
      * [RenderView]ならばscheduleInitialPaintで、その他はrepaintCompositedChildで代入される
      */
-    var layer: ContainerLayer? = null
+    var layer: ContainerFrameworkLayer? = null
 
     val attached: Boolean
         get() = owner != null

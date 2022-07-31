@@ -3,9 +3,9 @@ package dev.fastriver.fluko.framework.render.clip
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.center
 import dev.fastriver.fluko.common.layer.Clip
-import dev.fastriver.fluko.common.layer.ClipPathLayer
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.gesture.HitTestResult
+import dev.fastriver.fluko.framework.layer.ClipPathFrameworkLayer
 import dev.fastriver.fluko.framework.render.RenderBox
 import org.jetbrains.skia.Path
 import org.jetbrains.skia.Rect
@@ -37,7 +37,7 @@ class RenderClipOval(
                 Path().apply { addOval(clip!!) },
                 { c, o -> super.paint(c, o) },
                 clipBehavior,
-                layer as ClipPathLayer?
+                layer as ClipPathFrameworkLayer?
             )
         }
     }

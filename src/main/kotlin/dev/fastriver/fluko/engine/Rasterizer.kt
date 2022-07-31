@@ -1,7 +1,7 @@
 package dev.fastriver.fluko.engine
 
-import dev.fastriver.fluko.common.layer.LayerTree
-import dev.fastriver.fluko.common.layer.PaintContext
+import dev.fastriver.fluko.engine.layer.LayerTree
+import dev.fastriver.fluko.engine.layer.PaintContext
 import org.jetbrains.skia.*
 import org.lwjgl.opengl.GL11
 
