@@ -1,9 +1,10 @@
 package dev.fastriver.fluko.framework
 
 import dev.fastriver.fluko.common.Offset
-import dev.fastriver.fluko.common.layer.*
+import dev.fastriver.fluko.common.layer.Clip
 import dev.fastriver.fluko.common.makeOffset
 import dev.fastriver.fluko.common.math.Matrix4
+import dev.fastriver.fluko.framework.layer.*
 import dev.fastriver.fluko.framework.render.RenderObject
 import dev.fastriver.fluko.framework.render.RenderView
 import org.jetbrains.skia.*
@@ -57,15 +58,15 @@ class RenderPipeline(
     }
 }
 
-class PaintingContext(private val containerLayer: ContainerLayer, private val estimatedBounds: Rect) {
+class PaintingContext(private val containerLayer: ContainerFrameworkLayer, private val estimatedBounds: Rect) {
     companion object {
         /**
          * [RenderObject.isRepaintBoundary] == trueのRenderObjectの下位Layerを再構築する
          */
         fun repaintCompositedChild(child: RenderObject) {
-            var childLayer = child.layer as OffsetLayer?
+            var childLayer = child.layer as OffsetFrameworkLayer?
             if(childLayer == null) {
-                childLayer = OffsetLayer()
+                childLayer = OffsetFrameworkLayer()
                 child.layer = childLayer
             } else {
                 childLayer.removeAllChildren()
@@ -80,7 +81,7 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         }
     }
 
-    private var currentLayer: PictureLayer? = null
+    private var currentLayer: PictureFrameworkLayer? = null
     private var recorder: PictureRecorder? = null
     private var _canvas: Canvas? = null
     private val isRecording: Boolean
@@ -94,7 +95,7 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
 
     /// PictureLayerでの描画の録画を開始する
     private fun startRecording() {
-        currentLayer = PictureLayer(estimatedBounds)
+        currentLayer = PictureFrameworkLayer(estimatedBounds)
         recorder = PictureRecorder()
         _canvas = recorder!!.beginRecording(estimatedBounds)
         containerLayer.append(currentLayer!!)
@@ -134,18 +135,21 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         if(child.needsPaint) {
             repaintCompositedChild(child)
         }
-        val childOffsetLayer = child.layer as OffsetLayer
+        val childOffsetLayer = child.layer as OffsetFrameworkLayer
         childOffsetLayer.offset = offset
         appendLayer(childOffsetLayer)
     }
 
-    fun appendLayer(layer: Layer) {
+    fun appendLayer(layer: FrameworkLayer) {
         layer.remove()
         containerLayer.append(layer)
     }
 
     fun pushLayer(
-        childLayer: ContainerLayer, painter: PaintingContextCallback, offset: Offset, childPaintBounds: Rect? = null
+        childLayer: ContainerFrameworkLayer,
+        painter: PaintingContextCallback,
+        offset: Offset,
+        childPaintBounds: Rect? = null
     ) {
         if(childLayer.children.isNotEmpty()) {
             childLayer.removeAllChildren()
@@ -162,9 +166,9 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
     }
 
     fun pushOpacity(
-        offset: Offset, alpha: Int, painter: PaintingContextCallback, oldLayer: OpacityLayer? = null
-    ): OpacityLayer {
-        val layer = oldLayer ?: OpacityLayer()
+        offset: Offset, alpha: Int, painter: PaintingContextCallback, oldLayer: OpacityFrameworkLayer? = null
+    ): OpacityFrameworkLayer {
+        val layer = oldLayer ?: OpacityFrameworkLayer()
         layer.let {
             it.alpha = alpha
             it.offset = offset
@@ -179,11 +183,11 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         clipPath: Path,
         painter: PaintingContextCallback,
         clipBehavior: Clip = Clip.AntiAlias,
-        oldLayer: ClipPathLayer? = null
-    ): ClipPathLayer {
+        oldLayer: ClipPathFrameworkLayer? = null
+    ): ClipPathFrameworkLayer {
         val offsetBounds = bounds.offset(offset.dx.toFloat(), offset.dy.toFloat())
         val offsetClipPath = clipPath.offset(offset.dx.toFloat(), offset.dy.toFloat())
-        val layer = oldLayer ?: ClipPathLayer(offsetClipPath)
+        val layer = oldLayer ?: ClipPathFrameworkLayer(offsetClipPath)
         layer.let {
             it.clipPath = offsetClipPath
             it.clipBehavior = clipBehavior
@@ -198,11 +202,11 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         clipRRect: RRect,
         painter: PaintingContextCallback,
         clipBehavior: Clip = Clip.AntiAlias,
-        oldLayer: ClipRRectLayer? = null
-    ): ClipRRectLayer {
+        oldLayer: ClipRRectFrameworkLayer? = null
+    ): ClipRRectFrameworkLayer {
         val offsetBounds = bounds.offset(offset.dx.toFloat(), offset.dy.toFloat())
         val offsetClipRRect = clipRRect.makeOffset(offset)
-        val layer = oldLayer ?: ClipRRectLayer(offsetClipRRect)
+        val layer = oldLayer ?: ClipRRectFrameworkLayer(offsetClipRRect)
         layer.let {
             it.clipRRect = offsetClipRRect
             it.clipBehavior = clipBehavior
@@ -216,10 +220,10 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
         clipRect: Rect,
         painter: PaintingContextCallback,
         clipBehavior: Clip = Clip.AntiAlias,
-        oldLayer: ClipRectLayer? = null
-    ): ClipRectLayer {
+        oldLayer: ClipRectFrameworkLayer? = null
+    ): ClipRectFrameworkLayer {
         val offsetClipRect = clipRect.makeOffset(offset)
-        val layer = oldLayer ?: ClipRectLayer(offsetClipRect)
+        val layer = oldLayer ?: ClipRectFrameworkLayer(offsetClipRect)
         layer.let {
             it.clipRect = offsetClipRect
             it.clipBehavior = clipBehavior
@@ -229,11 +233,8 @@ class PaintingContext(private val containerLayer: ContainerLayer, private val es
     }
 
     fun pushTransform(
-        offset: Offset,
-        transform: Matrix4,
-        painter: PaintingContextCallback,
-        oldLayer: TransformLayer? = null
-    ): TransformLayer? {
+        offset: Offset, transform: Matrix4, painter: PaintingContextCallback, oldLayer: TransformFrameworkLayer? = null
+    ): TransformFrameworkLayer? {
         canvas.save()
         canvas.translate(offset.dx.toFloat(), offset.dy.toFloat())
         canvas.concat(transform.toMatrix44())

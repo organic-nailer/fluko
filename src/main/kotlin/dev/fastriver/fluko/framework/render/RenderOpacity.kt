@@ -1,8 +1,8 @@
 package dev.fastriver.fluko.framework.render
 
 import dev.fastriver.fluko.common.Offset
-import dev.fastriver.fluko.common.layer.OpacityLayer
 import dev.fastriver.fluko.framework.PaintingContext
+import dev.fastriver.fluko.framework.layer.OpacityFrameworkLayer
 import kotlin.math.roundToInt
 
 class RenderOpacity(
@@ -28,7 +28,7 @@ class RenderOpacity(
                 layer = null
                 return
             }
-            layer = context.pushOpacity(offset, alpha, { c, o -> super.paint(c, o) }, oldLayer = layer as OpacityLayer?)
+            layer = context.pushOpacity(offset, alpha, { c, o -> super.paint(c, o) }, oldLayer = layer as OpacityFrameworkLayer?)
         }
     }
 }

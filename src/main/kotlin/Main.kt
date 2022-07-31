@@ -1,9 +1,7 @@
 import dev.fastriver.fluko.engine.runFluko
 import dev.fastriver.fluko.framework.element.BuildContext
 import dev.fastriver.fluko.framework.geometrics.Alignment
-import dev.fastriver.fluko.framework.geometrics.Axis
 import dev.fastriver.fluko.framework.runApp
-import dev.fastriver.fluko.framework.widget.layout.AspectRatio
 import dev.fastriver.fluko.framework.widget.layout.Center
 import dev.fastriver.fluko.framework.widget.layout.Positioned
 import dev.fastriver.fluko.framework.widget.layout.Stack

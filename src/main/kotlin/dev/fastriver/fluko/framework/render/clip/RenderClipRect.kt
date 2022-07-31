@@ -3,10 +3,9 @@ package dev.fastriver.fluko.framework.render.clip
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.contains
 import dev.fastriver.fluko.common.layer.Clip
-import dev.fastriver.fluko.common.layer.ClipRectLayer
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.gesture.HitTestResult
-import dev.fastriver.fluko.framework.render.RenderBox
+import dev.fastriver.fluko.framework.layer.ClipRectFrameworkLayer
 import org.jetbrains.skia.Rect
 
 class RenderClipRect(
@@ -29,7 +28,7 @@ class RenderClipRect(
         if(child != null) {
             updateClip()
             layer = context.pushClipRect(
-                offset, clip!!, { c, o -> super.paint(c, o) }, clipBehavior, layer as ClipRectLayer?
+                offset, clip!!, { c, o -> super.paint(c, o) }, clipBehavior, layer as ClipRectFrameworkLayer?
             )
         } else {
             layer = null

@@ -2,13 +2,13 @@ package dev.fastriver.fluko.framework.render
 
 import dev.fastriver.fluko.common.Offset
 import dev.fastriver.fluko.common.layer.Clip
-import dev.fastriver.fluko.common.layer.ClipRectLayer
-import dev.fastriver.fluko.common.layer.TransformLayer
 import dev.fastriver.fluko.common.math.Matrix4
 import dev.fastriver.fluko.framework.PaintingContext
 import dev.fastriver.fluko.framework.geometrics.Alignment
 import dev.fastriver.fluko.framework.geometrics.BoxConstraints
 import dev.fastriver.fluko.framework.gesture.HitTestResult
+import dev.fastriver.fluko.framework.layer.ClipRectFrameworkLayer
+import dev.fastriver.fluko.framework.layer.TransformFrameworkLayer
 import dev.fastriver.fluko.framework.painting.BoxFit
 
 class RenderFittedBox(
@@ -66,14 +66,14 @@ class RenderFittedBox(
         }
     }
 
-    private fun paintChildWithTransform(context: PaintingContext, offset: Offset): TransformLayer? {
+    private fun paintChildWithTransform(context: PaintingContext, offset: Offset): TransformFrameworkLayer? {
         val childOffset = transform!!.getAsTranslation()
         if(childOffset == null) {
             return context.pushTransform(
                 offset,
                 transform!!,
                 { c, o -> super.paint(c, o) },
-                oldLayer = if(layer is TransformLayer) layer as TransformLayer else null
+                oldLayer = if(layer is TransformFrameworkLayer) layer as TransformFrameworkLayer else null
             )
         } else {
             super.paint(context, offset + childOffset)
@@ -91,7 +91,7 @@ class RenderFittedBox(
                 offset,
                 size.and(Offset.zero),
                 { c, o -> paintChildWithTransform(c, o) },
-                oldLayer = if(layer is ClipRectLayer) layer as ClipRectLayer else null,
+                oldLayer = if(layer is ClipRectFrameworkLayer) layer as ClipRectFrameworkLayer else null,
                 clipBehavior = clipBehavior
             )
         } else {
